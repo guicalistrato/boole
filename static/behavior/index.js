@@ -355,7 +355,7 @@
         '  background: rgba(15, 179, 190, 0.18);',
         '  border: 1px solid rgba(15, 179, 190, 0.26);',
         '  color: #71dbe3;',
-        '  font-size: 0.78rem;',
+        '  font-size: 1rem;',
         '  font-weight: 700;',
         '  white-space: nowrap;',
         '  overflow: hidden;',
