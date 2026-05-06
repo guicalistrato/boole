@@ -422,7 +422,7 @@ Descrever em tópicos as mudanças técnicas implementadas nessa branch (ex.: fe
 ## Como Testar
 
 1. `python db_init.py`
-2. `python app.py`
+2. `flask run`
 3. Acessar `http://localhost:5000`
 4. Criar conta e testar novo endpoint
 
