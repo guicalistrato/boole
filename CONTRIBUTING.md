@@ -89,12 +89,19 @@ Isso cria as tabelas `usuarios` e `duvidas` em `dados.db`.
 ### Passo 6: Rodar a Aplicação
 
 ```bash
-python app.py
+flask run
 ```
 
 Acesse `http://localhost:5000` no navegador.
 
 ---
+
+Se quiser ver as alterações no código rodando em tempo real, execute:
+
+```bash
+flask --app app.py run --debug
+```
+
 
 ## Estrutura do Projeto
 
@@ -415,7 +422,7 @@ Descrever em tópicos as mudanças técnicas implementadas nessa branch (ex.: fe
 ## Como Testar
 
 1. `python db_init.py`
-2. `python app.py`
+2. `flask run`
 3. Acessar `http://localhost:5000`
 4. Criar conta e testar novo endpoint
 

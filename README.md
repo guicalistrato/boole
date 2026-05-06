@@ -93,7 +93,7 @@ python db_init.py
 ### 6. Rodar a aplicação
 
 ```bash
-python app.py
+flask run
 ```
 
 Acesse: http://localhost:5000
