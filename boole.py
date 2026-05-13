@@ -41,8 +41,15 @@ CONFIG = genai.types.GenerateContentConfig(
 )
 
 
-def run_boole(pergunta: str, num) -> str:
+def run_boole(pergunta: str, num, modelo) -> str:
     """Recebe uma pergunta do aluno e retorna a resposta do tutor Boole."""
+
+    # seleciona o modelo
+    if modelo == "pro":
+        modelo = "gemini-2.5-pro"
+    
+    else:
+        modelo = "gemini-2.5-flash"
 
     if not pergunta or not pergunta.strip():
         return "Por favor, envie uma pergunta válida."
@@ -52,7 +59,7 @@ def run_boole(pergunta: str, num) -> str:
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model=modelo,
             contents=pergunta,
             config=CONFIG
         )
