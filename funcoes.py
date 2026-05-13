@@ -36,6 +36,34 @@ def salvar_duvida(usuario, pergunta, resposta, nome_chat, id_chat):
     except Exception as e:
         print(f"Erro ao salvar dúvida: {e}")
         return False
+    
+def salvar_codigo(codigo, id_chat):
+    try:
+        db = get_db()
+        db.execute(
+            "INSERT INTO codigos (id_chat, codigo) VALUES (?, ?)", (id_chat, codigo)
+        )
+        db.commit()
+        return True
+    except Exception as e:
+        print(f"Erro ao salvar código: {e}")
+        return False
+
+def receber_codigo(id):
+    try:
+        db = get_db()
+        cursor = db.execute(
+            "SELECT codigo FROM codigos WHERE id_chat = ?", (id,) 
+        )
+        resultado = cursor.fetchone()
+
+        if resultado is not None:
+            return resultado[0]
+
+        return None
+    except Exception:
+        print("Código não encontrado")
+        return None
 
 # essa função recebe as duvidas de um mesmo chat
 def receber_duvidas_chat(id):

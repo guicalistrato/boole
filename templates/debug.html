@@ -4,10 +4,13 @@
 <head></head>
 
 <body> Olá </body>
-
-
+<div id="debug">
+        <input type="text" id="codigo" placeholder="Código">
+        <button type="button" id="enviar" onclick="enviar_debug()">Enviar código</button>
+</div>
 
 <script defer src="{{url_for ('static', filename='behavior/index.js')}}"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script defer src="{{url_for ('static', filename='behavior/debug.js')}}"></script>
 
 </html>
