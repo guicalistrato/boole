@@ -117,6 +117,17 @@ def api_listar_chats():
 
     return {"chats": chats}, 200
 
+# rota do debug
+@app.get('/debug')
+def debug_get():
+    return render_template("debug.html")
+
+@app.post('/debug')
+def debug_post():
+    dados = request.get_json()
+    
+    chat_post(id_chat=None)
+
 if __name__ == "__main__":
     app.run(debug=True)
 
