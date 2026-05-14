@@ -41,7 +41,7 @@ CONFIG = genai.types.GenerateContentConfig(
 )
 
 
-def run_boole(pergunta: str, num, modelo) -> str:
+def run_boole(pergunta: str, num, modelo, codigo) -> str:
     """Recebe uma pergunta do aluno e retorna a resposta do tutor Boole."""
 
     # seleciona o modelo
@@ -57,10 +57,14 @@ def run_boole(pergunta: str, num, modelo) -> str:
     full_prompt = f"{SYSTEM_PROMPT}\n\nPergunta do aluno:\n{pergunta}"
     prompt_titulo = f"Gere apenas um título simples, de poucas palavras, contendo apenas letras ou números, sobre a seguinte pergunta: {pergunta}"
 
+    codigo_prompt = ""
+    if codigo != None:
+        codigo_prompt = f"\nTrabalhe sobre este código base. Se o aluno se questionar sobre o uso de um código, ele está falando sobre este: {codigo}"
+        
     try:
         response = client.models.generate_content(
             model=modelo,
-            contents=pergunta,
+            contents=pergunta+codigo_prompt,
             config=CONFIG
         )
         # se for a primeira mensagem, gera um título
