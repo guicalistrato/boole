@@ -59,8 +59,10 @@ def chat_post(id_chat=None):
     
     # recebe um codigo caso o chat seja de modo debug
     codigo = None
+    debug = False
     if session.get("debug") == True:
         codigo = receber_codigo(id_chat)
+        debug = True
 
     if not dados:
         return {"erro": "Dados não recebidos"}, 400
@@ -86,7 +88,7 @@ def chat_post(id_chat=None):
     usuario = session.get("user_id")
     salvar_duvida(usuario, duvida, resposta_boole, titulo, id_chat)
 
-    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat}, 200
+    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
 
 # nova rota de historico
 @app.get("/api/chat/<id_chat>")

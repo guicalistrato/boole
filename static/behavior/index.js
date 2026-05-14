@@ -71,8 +71,11 @@
           messageCounter = data.mensagens.length * 2; 
         }
       } catch (error) {
-        console.error(error);
-        alert("Não foi possível carregar a conversa.");
+        if (!data.debug) {
+          console.error(error);
+          alert("Não foi possível carregar a conversa.");
+        }
+        
       } finally {
         setSendingState(false);
       }
