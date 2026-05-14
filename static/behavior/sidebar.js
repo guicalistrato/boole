@@ -90,6 +90,12 @@ window.addEventListener("click", function(event) {
         fecharLoginPopup();
     }
 });
+
+// direcionar para o modo debug
+function debug() {
+     window.location.href = '/debug'
+}
+
 // função listas colapsáveis - em comentário porque nao vai ser necessária na versão atual, mas pode ser util futuramente
 //document.addEventListener('DOMContentLoaded', () => {
 //    const toggles = document.querySelectorAll('.toggle-button');

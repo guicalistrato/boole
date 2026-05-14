@@ -34,6 +34,15 @@ def init_db():
             ON duvidas(usuario)
         """)
 
+        # Tabela de códigos
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS codigos (
+            id_chat TEXT NOT NULL,
+            codigo TEXT NOT NULL          
+            )
+
+        """)
+
         conn.commit()
 
     print("Banco de dados inicializado com sucesso!")

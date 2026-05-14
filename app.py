@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, session, g, redirect
+from flask import Flask, render_template, request, session, g, redirect, url_for, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 from boole import run_boole
 
-from funcoes import get_db, salvar_duvida, criar_id
+from funcoes import get_db, salvar_duvida, criar_id, salvar_codigo, receber_codigo
 
 # ============= CONFIGURAÇÃO =============
 
@@ -43,12 +43,25 @@ def chat_get(id_chat=None):
     else:
         usuario = f", {usuario}"
 
+    # checa se há um codigo na id atual para alterar para modo debug
+    if receber_codigo(id_chat) == None:
+        session["debug"] = False
+    
+    else:
+        session["debug"] = True
+
     return render_template("index.html", id_chat=id_chat, usuario=usuario)
 
 @app.post("/chat")
 @app.post("/chat/<id_chat>")
 def chat_post(id_chat=None):
     dados = request.get_json()
+    
+    # recebe um codigo caso o chat seja de modo debug
+    codigo = None
+    if session.get("debug") == True:
+        codigo = receber_codigo(id_chat)
+
     if not dados:
         return {"erro": "Dados não recebidos"}, 400
 
@@ -57,7 +70,7 @@ def chat_post(id_chat=None):
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
-    resultados = run_boole(duvida, num)
+    resultados = run_boole(duvida, num, codigo)
     resposta_boole = resultados[0]
     titulo = resultados[1] 
 
@@ -116,6 +129,20 @@ def api_listar_chats():
     chats = [{"id_chat": linha["id_chat"], "nome_chat": linha["nome_chat"]} for linha in linhas]
 
     return {"chats": chats}, 200
+
+# redireciona para um chat em modo debug
+@app.route('/debug', methods=['GET', 'POST'])
+def debug():
+    if request.method == 'POST':
+        dados = request.get_json()
+        codigo = dados.get('codigo', '')
+        id_chat = criar_id(20)
+        session["debug"] = True
+        salvar_codigo(codigo, id_chat)
+        url = url_for('chat_get', id_chat=id_chat)
+        return jsonify({'redirect': url})  # retorna a URL como JSON
+    else:
+        return render_template('debug.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
