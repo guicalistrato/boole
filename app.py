@@ -66,11 +66,12 @@ def chat_post(id_chat=None):
         return {"erro": "Dados não recebidos"}, 400
 
     num = dados.get('num') # número de perguntas já feitas
+    modelo = dados.get('modelo')
     duvida = dados.get('duvida', '').strip()
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
-    resultados = run_boole(duvida, num, codigo)
+    resultados = run_boole(duvida, num, modelo, codigo)
     resposta_boole = resultados[0]
     titulo = resultados[1] 
 

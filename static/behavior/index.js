@@ -18,9 +18,10 @@
     const chatForm = document.getElementById('chat-form');
     const inputField = document.getElementById('input-field');
     const sendButton = document.getElementById('send-button');
+    const modeloSelecionado = document.getElementById('modelo');
 
     // garante que todos os elementos necessarios existem antes de continuar
-    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton) {
+    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton || !modeloSelecionado) {
       return;
     }
 
@@ -115,7 +116,7 @@
       setSendingState(true);
 
       try {
-        const botAnswer = await requestBotAnswer(userText);
+        const botAnswer = await requestBotAnswer(userText, modeloSelecionado.value);
         replaceTypingWithText(
           typingMessage,
           botAnswer || 'Nao consegui gerar uma resposta agora. Tente novamente.'
@@ -221,13 +222,13 @@
     }
 
     // faz requisição ao backend para obter resposta da IA
-    async function requestBotAnswer(question) {
+    async function requestBotAnswer(question, modelo) {
       // envia pergunta para o servidor usando a URL atual da pagina (/chat ou /chat/id)
       const currentUrl = window.location.pathname;
       const response = await fetch(currentUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ duvida: question, num: messageCounter })
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ duvida: question, num: messageCounter, modelo: modelo })
       });
 
       let data = null;
