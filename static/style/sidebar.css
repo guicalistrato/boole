@@ -1,3 +1,15 @@
+:root {
+  color-scheme: light dark;
+  --text: #f5f7f7;
+  --muted-sidebar: rgb(115, 142, 144);
+  --bg-sidebar: #164B4D;
+  --accent-sidebar: #022028;
+
+  --text-light: #011014;
+  --muted-sidebar-light: rgb(115, 142, 144);
+  --bg-sidebar-light: #9BD9D5;
+  --accent-sidebar-light: white;
+}
 .sidebar {
   height: 100%;
   width: 0; 
@@ -5,7 +17,7 @@
   top: 0;
   left: 0;
   bottom: 0;
-  background-color: #164B4D;
+  background-color: light-dark(var(--bg-sidebar-light), var(--bg-sidebar));
   overflow-x: hidden;
   transition: 0.5s;
   font-family: Arial, Helvetica, sans-serif;
@@ -16,11 +28,11 @@
 
 .sidebar .closebtn {
   height: 36px;
-  color: #022C2D;
+  color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
 }
 
 .sidebar .closebtn:hover {
-  color: white;
+  color: light-dark(var(--text-light), var(--text));
 }
 
 .sidebar-title-area{
@@ -48,7 +60,7 @@
 
 #top-sidebar-title{
   font-weight: bold;
-  color: #fff;
+  color: light-dark(var(--text-light), var(--text));
   font-size: 24px;
   margin: 0
 }
@@ -60,7 +72,7 @@
   padding: 10px;
   background: transparent;
   width: 270px;
-  color: #fff;
+  color: light-dark(var(--text-light), var(--text));
 }
 
 .content ul {
@@ -70,7 +82,7 @@
 }
 
 .content ul li a {
-  color: grey;
+  color: light-dark(var(--muted-sidebar-light), var(--muted-sidebar));
   text-decoration: none;
   display: block;
   white-space: nowrap;
@@ -82,7 +94,7 @@
 }
 
 .content ul li a:hover {
-  color: white;
+  color: light-dark(var(--text-light), var(--text));
 }
 
 #nova-conversa{
@@ -92,7 +104,7 @@
   font-weight: bold;
   gap: 7px;
   font-size: 18px;
-  color: #fff;
+  color: light-dark(var(--text-light), var(--text));
   border: none;
   padding: 10px;
 }
@@ -101,7 +113,7 @@
   margin-top: auto; /* botão fica no final da sidebar */
   align-self: flex-start;
   background-color: transparent;
-  color: white;
+  color: light-dark(var(--text-light), var(--text));
   border: none;
   padding: 10px;
   cursor: pointer;
