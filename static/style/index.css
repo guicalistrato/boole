@@ -132,6 +132,90 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
   scrollbar-color: rgba(15, 179, 190, 0.35) transparent;
 }
 
+/* container principal do botão de selecionar modelo */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn {
+  background-color: transparent;
+  color: #fff;
+  padding: 10px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#menu-title{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+/* caixa do menu (escondida por padrão) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  background-color: var(--bg-2);
+  min-width: 280px; 
+  max-width: 350px; 
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+  z-index: 1;
+  border-radius: 6px;
+  padding: 0;
+  margin-top: 5px;
+  list-style: none;
+}
+
+/* Estilo dos links/itens dentro do dropdown */
+.dropdown-content li a {
+  color: #333333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+/* Remove a borda do último item */
+.dropdown-content li:last-child a {
+  border-bottom: none;
+}
+
+/* estilo do título */
+.dropdown-content strong {
+  display: block;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+/* estilo da legenda */
+.dropdown-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4; 
+}
+
+.dropdown-content li a:hover {
+  background-color: var(--accent);
+}
+
+/* mostra as opções ao passar o mouse pelo container */
+.dropdown:hover {
+  background-color: var(--bg-2);
+  border-radius: 8px;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
 .chat-messages {
   width: min(100%, 760px);
   flex: 1;

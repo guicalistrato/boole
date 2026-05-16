@@ -65,6 +65,31 @@
       <form id="chat-form" data-role="chat-form" action="#" method="post">
         <div class="input-wrapper">
           <label for="input-field" class="sr-only">Mensagem</label>
+
+          <div class="dropdown">
+            <button class="dropdown-btn" id="modelo">
+              <div id="menu-title">
+                <span>Padrão</span> 
+                <img src="{{url_for('static', filename='images/dropdown-expandir.png')}}" alt="Expandir" style="height: 16px;">
+              </div>
+
+            </button>
+            <ul class="dropdown-content" id="opcoes-modelo">
+              <li>
+                <a href="#" value="padrão">
+                  <strong>Padrão</strong>
+                  <p>Mais agilidade nas respostas</p>
+                </a>
+              </li>
+              <li>
+                <a href="#" value="pro">
+                  <strong>Pro</strong>
+                  <p>Ideal para problemas complexos</p>
+                </a>
+              </li>
+            </ul>
+          </div>
+
           <textarea
             class="input-field"
             id="input-field"
@@ -88,10 +113,6 @@
       </form>
       </footer>
 
-      <select id="modelo">
-        <option value="padrão">Padrão</option>
-        <option value="pro">Pro</option>
-      </select>
 
     </div>
   </div>
