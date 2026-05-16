@@ -67,7 +67,6 @@
 .content ul li a {
   color: grey;
   text-decoration: none;
-  /*mudei de block para inline para estilização*/
   display: block;
   white-space: nowrap;
   overflow: hidden;
