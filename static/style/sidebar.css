@@ -63,15 +63,11 @@
   color: #fff;
 }
 
-.content ul {
-  list-style: none;
-  padding: 10px 0px;
-  margin: 0;
-}
 
 .content ul li a {
   color: grey;
   text-decoration: none;
+  /*mudei de block para inline para estilização*/
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -79,6 +75,37 @@
   transition: 0.5s;
   font-size: 16px;
   padding: 8px 8px 8px 8px;
+}
+
+.content ul {
+  list-style: none;
+  padding: 10px 0px;
+  margin: 0;
+  /*adicionei para conseguir mudar a ordem dos elementos*/
+  display:grid;
+  grid-template-columns: 100%;
+}
+
+.pinned{
+  order:-1;
+}
+
+.ícone_pin{
+  /* deixa a transição um pouco menos feia */
+  transition-duration: 200ms;
+}
+
+.fixarbtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  float:right;
+  height:20px;
+  width:20px; 
+  padding:0px;
+  /* alinha o botão melhor com o nome da conversa */
+  transform: translateY(7px);
 }
 
 .content ul li a:hover {

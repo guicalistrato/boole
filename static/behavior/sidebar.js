@@ -31,16 +31,73 @@ async function carregarSidebarChats() {
             data.chats.forEach(chat => {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
+                const fixarbtn = document.createElement('button');
                 
                 a.href = '/chat/' + chat.id_chat;
                 a.textContent = chat.nome_chat || 'Nova Conversa';
+                a.textContent = chat.id_chat;
 
                 const currentUrlPath = window.location.pathname;
                 if (currentUrlPath.includes(chat.id_chat)) {
                     a.classList.add('active-chat');
                 }
 
+
+                /*Armazenamento da conversa no localStorage
+                  isso serve para manter o pin depois que a pessoa muda de rota
+                  e também para manter mesmo que a pessoa feche a aba */
+                /*OBS: Caso queira que o pin vá embora quando a pessoa fecha a aba
+                       pode mudar de localStorage para sessionStorage */
+                
+                //checagem se essa conversa já foi armazenada
+                if (!localStorage.getItem(chat.id_chat)){//impede que o pin de uma conversa seja resetado
+                    //armazena a conversa
+                    localStorage.setItem(chat.id_chat, "0");//0=pin off, 1=pin on
+                }
+
+                //         Adição de estilização e propriedades
+                fixarbtn.classList = "fixarbtn";
+                //colocar o símbolo svg
+                const símbolo = document
+                                .getElementById("símbolo_fixar")//pega o ícone svg original
+                                .cloneNode(true);//cria uma cópia do ícone svg
+                símbolo.removeAttribute("id");//remove o id para não ter id's duplicados
+                símbolo.style="background:transparent;";//remove o display:none; que esconde o original
+                fixarbtn.appendChild(símbolo);
+
+                //função para fazer ele fixar
+                fixarbtn.onclick = (evento) => {
+                    //navegação para pegar a tag <g> que contém o ícone
+                    const ícone = fixarbtn.firstElementChild.firstElementChild;
+                    //extrai o li a partir do botão
+                    const listItem = fixarbtn.parentElement;
+
+                    listItem.classList.toggle("pinned");
+                    //muda a cor do ícone e atualiza o localStorage
+                    if (listItem.classList.contains("pinned")){
+                        ícone.setAttribute("color","yellow");
+                        localStorage.setItem(chat.id_chat , "1");
+                    }
+                    else{
+                        ícone.setAttribute("color","white");
+                        localStorage.setItem(chat.id_chat, "0");
+                    }
+                }
+
+                //navegação para pegar a tag <g> que contém o ícone
+                const g = fixarbtn.firstElementChild.firstElementChild;
+                //seta a cor e a posição dependendo do localStorage
+                if (localStorage.getItem(chat.id_chat) == "1"){
+                    li.classList.toggle("pinned");
+                    g.setAttribute("color","yellow");
+                }
+                else{
+                    g.setAttribute("color","white");
+                }
+
+
                 li.appendChild(a);
+                li.appendChild(fixarbtn);
                 conversationList.appendChild(li);
             });
         } else {
