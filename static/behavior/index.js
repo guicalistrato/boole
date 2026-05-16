@@ -19,6 +19,12 @@
     const inputField = document.getElementById('input-field');
     const sendButton = document.getElementById('send-button');
     const modeloSelecionado = document.getElementById('modelo');
+    modeloSelecionado.value = "padrão";
+
+    // atualiza quando uma opção é clicada
+    document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
+      opcao.addEventListener('click', (e) => modeloSelecionado.value = e.currentTarget.getAttribute('value'));
+    });
 
     // garante que todos os elementos necessarios existem antes de continuar
     if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton || !modeloSelecionado) {
