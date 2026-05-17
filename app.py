@@ -4,6 +4,7 @@ from flask_session import Session
 import sqlite3
 from boole import run_boole
 from funcoes import login_required
+from funcoes import login_required, get_db, obter_historico_chat
 
 # ============= CONFIGURAÇÃO =============
 
@@ -20,13 +21,6 @@ def after_request(response):
     return response
 
 # ============= BANCO DE DADOS =============
-
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect('dados.db')
-        g.db.row_factory = sqlite3.Row
-    return g.db
-
 @app.teardown_appcontext
 def close_db(e=None):
     db = g.pop('db', None)
@@ -102,9 +96,9 @@ def index_post():
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
-    resposta_boole = run_boole(duvida)
-
     usuario = session.get("user_id")
+    resposta_boole = run_boole(duvida, usuario)
+
     if usuario:
         salvar_duvida(usuario, duvida, resposta_boole)
 

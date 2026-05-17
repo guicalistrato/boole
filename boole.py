@@ -1,6 +1,7 @@
 import os
 from google import genai
 from dotenv import load_dotenv
+from funcoes import obter_historico_chat
 
 load_dotenv(".env.local")
 
@@ -41,16 +42,19 @@ CONFIG = genai.types.GenerateContentConfig(
 )
 
 
-def run_boole(pergunta: str) -> str:
+def run_boole(pergunta: str, usuario=None) -> str:
     """Recebe uma pergunta do aluno e retorna a resposta do tutor Boole."""
 
     if not pergunta or not pergunta.strip():
         return "Por favor, envie uma pergunta válida."
 
     try:
+        historico = obter_historico_chat(usuario) if usuario else []
+        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}]
+
         response = client.models.generate_content(
             model="gemini-2.5-flash",
-            contents=pergunta,
+            contents=contents,
             config=CONFIG
         )
         return response.text
