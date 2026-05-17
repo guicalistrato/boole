@@ -21,6 +21,8 @@ def init_db():
                 usuario TEXT NOT NULL,
                 pergunta TEXT NOT NULL,
                 resposta TEXT NOT NULL,
+                nome_chat TEXT NOT NULL,
+                id_chat TEXT NOT NULL,
                 data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (usuario) REFERENCES usuarios(usuario)
             )
@@ -30,6 +32,15 @@ def init_db():
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_duvidas_usuario
             ON duvidas(usuario)
+        """)
+
+        # Tabela de códigos
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS codigos (
+            id_chat TEXT NOT NULL,
+            codigo TEXT NOT NULL          
+            )
+
         """)
 
         conn.commit()

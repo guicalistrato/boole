@@ -14,7 +14,7 @@ function enviar_dados() {
 
     .then(data => {
         if (data.redirect) {
-            window.location.href = data.redirect; 
+            window.location.href = '/chat'; 
         } else if (data.erro) {
             alert(data.erro); 
         }
@@ -25,4 +25,8 @@ function enviar_dados() {
 
 function criar_conta() {
     window.location.href = '/criar-conta';
+}
+
+function continuar_sem_login() {
+    window.location.href = '/continuar-sem-login';
 }

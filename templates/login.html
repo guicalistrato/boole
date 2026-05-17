@@ -1,32 +1,25 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <title>Boole - Login</title>
-    <link rel="stylesheet" href="{{url_for ('static', filename='style/login.css')}}">
-</head>
-<body>
-    <div id="bloco-central">
+    <div id="loginPopup" class="popup">
+        <div class="popup-content">
+            <span class="fechar" onclick="fecharLoginPopup()">&times;</span>
 
-        <div id="titulo">
-            <span id="main-title">Bem-vindo, dev!</span>
-            <span>Faça seu login ou signup</span>
+            <div id="bloco-central">
+
+                <div id="titulo">
+                    <span id="main-title">Bem-vindo, dev!</span>
+                    <span id="subtitulo">Faça seu login ou signup</span>
+                </div>
+
+                <div id="login">
+                    <input type="text" id="usuario" placeholder="Usuário">
+                    <p><input type="password" id="senha" placeholder="Senha"></p>
+                    <button type="button" id="botao-login" onclick="enviar_dados()">Continuar</button>
+                </div>
+
+                <div id="botoes-extras">
+                    <button id="direc-criar-conta" onclick="fecharLoginPopup(); abrir_criar_conta()" type="button">Crie uma conta</button>
+                    <button id="cont-sem-login" onclick="continuar_sem_login()" type="button">Continuar sem login</button>
+                </div>
+
+            </div>
         </div>
-
-        <div id="login">
-            <input type="text" id="usuario" placeholder="Usuário">
-            <p><input type="password" id="senha" placeholder="Senha"></p>
-            <button type="button" id="botao-login" onclick="enviar_dados()">Continuar</button>
-        </div>
-
-        <div id="botoes-extras">
-            <a href="/criar-conta">
-                <button id="botao-criar-conta" type="button">Crie uma conta</button>
-            </a>
-            <button id="cont-sem-login" type="button">Continuar sem login</button>
-        </div>
-
     </div>
-    <script src="{{url_for('static', filename='behavior/login.js')}}"></script>
-
-</body>
-</html>

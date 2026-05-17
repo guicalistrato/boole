@@ -18,9 +18,16 @@
     const chatForm = document.getElementById('chat-form');
     const inputField = document.getElementById('input-field');
     const sendButton = document.getElementById('send-button');
+    const modeloSelecionado = document.getElementById('modelo');
+    modeloSelecionado.value = "padrão";
+
+    // atualiza quando uma opção é clicada
+    document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
+      opcao.addEventListener('click', (e) => modeloSelecionado.value = e.currentTarget.getAttribute('value'));
+    });
 
     // garante que todos os elementos necessarios existem antes de continuar
-    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton) {
+    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton || !modeloSelecionado) {
       return;
     }
 
@@ -34,6 +41,51 @@
     let isSending = false;
     let hasStarted = false;
     let messageCounter = 0;
+
+    // acessa a variável id_chat que o Flask renderiza ou le direto da URL
+    const pathParts = window.location.pathname.split('/');
+    const possibleChatId = pathParts[pathParts.length - 1]; 
+    
+    if (possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
+        carregarHistorico(possibleChatId);
+    }
+
+    // busca o historico no back
+    async function carregarHistorico(chatId) {
+      try {
+        setSendingState(true); // Desativa o input enquanto carrega
+
+        const response = await fetch('/api/chat/' + chatId);
+        
+        if (!response.ok) {
+            throw new Error('Histórico não encontrado');
+        }
+        
+        const data = await response.json();
+        
+        if (data.mensagens && data.mensagens.length > 0) {
+          hasStarted = true;
+          activateConversationUI(data.nome_chat);
+          
+          data.mensagens.forEach(msg => {
+            appendMessage('user', msg.pergunta);
+            appendMessage('bot', msg.resposta);
+          });
+          
+          // O messageCounter precisa saber quantas mensagens já existem
+          // para enviar o número certo para a API do Gemini depois
+          messageCounter = data.mensagens.length * 2; 
+        }
+      } catch (error) {
+        if (!data.debug) {
+          console.error(error);
+          alert("Não foi possível carregar a conversa.");
+        }
+        
+      } finally {
+        setSendingState(false);
+      }
+    }
 
     // eventos de envio de mensagem (formulario e tecla enter)
     chatForm.addEventListener('submit', function (event) {
@@ -62,7 +114,7 @@
 
       if (!hasStarted) {
         hasStarted = true;
-        activateConversationUI(userText);
+        activateConversationUI();
       }
 
       appendMessage('user', userText);
@@ -73,7 +125,7 @@
       setSendingState(true);
 
       try {
-        const botAnswer = await requestBotAnswer(userText);
+        const botAnswer = await requestBotAnswer(userText, modeloSelecionado.value);
         replaceTypingWithText(
           typingMessage,
           botAnswer || 'Nao consegui gerar uma resposta agora. Tente novamente.'
@@ -89,7 +141,7 @@
     }
 
     // ativa mudanças visuais quando a primeira mensagem é enviada
-    function activateConversationUI(firstQuestion) {
+    function activateConversationUI(titulo = '...') {
       chatContainer.classList.add('chat-started');
 
       if (headerContent) {
@@ -99,10 +151,20 @@
       if (!chatHeader.querySelector('.topic-pill')) {
         const topicPill = document.createElement('div');
         topicPill.className = 'topic-pill';
-        topicPill.textContent = buildTopicLabel(firstQuestion);
+        topicPill.textContent = titulo;
         chatHeader.appendChild(topicPill);
       }
     }
+
+  function atualizarTituloConversa(titulo) {
+    // Procura a pill que foi criada na tela
+    const topicPill = chatHeader.querySelector('.topic-pill');
+    
+    // Se ela existir, atualiza o texto
+    if (topicPill) {
+      topicPill.textContent = titulo;
+  }
+  }
 
     // cria e adiciona uma mensagem (usuario ou bot) no chat
     function appendMessage(author, text) {
@@ -169,13 +231,13 @@
     }
 
     // faz requisição ao backend para obter resposta da IA
-    async function requestBotAnswer(question) {
-      // envia pergunta para o servidor
-      // espera resposta no formato JSON
-      const response = await fetch('/', {
+    async function requestBotAnswer(question, modelo) {
+      // envia pergunta para o servidor usando a URL atual da pagina (/chat ou /chat/id)
+      const currentUrl = window.location.pathname;
+      const response = await fetch(currentUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ duvida: question })
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify({ duvida: question, num: messageCounter, modelo: modelo })
       });
 
       let data = null;
@@ -193,7 +255,27 @@
       if (!data || !data.resultado) {
         throw new Error('Resposta vazia');
       }
+      
+      // se for um chat recém-criado, atualiza a URL do navegador com o novo ID
+      if (data.novo_chat && data.id_chat) {
+        window.history.pushState({}, '', '/chat/' + data.id_chat);
+      }
+      
+      // atualiza o titulo do chat
+      const titulo = String(data.titulo).trim();
 
+      // atualizar titulo caso seja primeira mensagem
+      if (messageCounter < 3) {
+        atualizarTituloConversa(titulo);
+      }
+
+      // chama a função da sidebar
+      if (typeof window.carregarSidebarChats === 'function') {
+          window.carregarSidebarChats();
+      } else {
+          console.warn("A função da sidebar ainda não foi carregada no window.");
+      }
+      
       return String(data.resultado).trim();
     }
 
@@ -244,23 +326,6 @@
       }
     }
 
-    // gera um rotulo/resumo da duvida para exibir no topo
-    function buildTopicLabel(question) {
-      const cleaned = sanitizeInput(question).toLowerCase();
-
-      if (/recurs/i.test(cleaned)) {
-        return 'Duvida sobre funcoes recursivas';
-      }
-
-      const sobreMatch = cleaned.match(/sobre\s+(.+)/i);
-      if (sobreMatch && sobreMatch[1]) {
-        return capAndTrim('Duvida sobre ' + sobreMatch[1]);
-      }
-
-      const firstWords = cleaned.split(' ').slice(0, 4).join(' ');
-      return capAndTrim('Duvida sobre ' + firstWords);
-    }
-
     // capitaliza e limita o tamanho do texto
     function capAndTrim(text) {
       const safe = String(text || '').trim();
@@ -300,7 +365,7 @@
         '  background: rgba(15, 179, 190, 0.18);',
         '  border: 1px solid rgba(15, 179, 190, 0.26);',
         '  color: #71dbe3;',
-        '  font-size: 0.78rem;',
+        '  font-size: 1rem;',
         '  font-weight: 700;',
         '  white-space: nowrap;',
         '  overflow: hidden;',
@@ -340,6 +405,42 @@ window.openSidebar = function () {
   }
 
   menu_button.style.visibility = 'hidden';
-  sidebar.style.width = '250px';
+  sidebar.style.width = '350px';
   /*container.style.marginLeft = '250px';*/
 };
+
+// COMPORTAMENTO MENU DROPDOWN DE SELECIONAR MODELO
+const botao = document.getElementById('modelo');
+const menu = document.getElementById('opcoes-modelo');
+
+// abre/fecha o menu ao clicar no botão
+botao.addEventListener('click', function(event) {
+  event.stopPropagation();
+  menu.classList.toggle('show');
+});
+
+// captura o clique em um item do menu para atualizar o botão
+const itens = menu.querySelectorAll('li a');
+
+itens.forEach(function(item) {
+  item.addEventListener('click', function(event) {
+    event.preventDefault(); // impede a página de recarregar/pular
+    event.stopPropagation(); // impede o clique de fechar o menu antes da hora
+    
+    // busca o texto dentro da tag <strong> do item clicado
+    const tituloSelecionado = item.querySelector('strong').textContent;
+    
+    // atualiza o texto do botão principal
+    botao.textContent = tituloSelecionado;
+    
+    // fecha o menu após a seleção
+    menu.classList.remove('show');
+  });
+});
+
+// fecha o menu se o usuário clicar em qualquer outro lugar da tela
+document.addEventListener('click', function() {
+  if (menu.classList.contains('show')) {
+    menu.classList.remove('show');
+  }
+});

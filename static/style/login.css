@@ -1,12 +1,28 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* 100% da altura do viewport */
-    width: 100%;
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  z-index: 999;
+}
+
+.popup-content {
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 12px;
+  width: 350px;
+  position: relative;
+}
+
+.fechar {
+  position: absolute;
+  top: 50px;
+  left: 390px;
+  cursor: pointer;
+  font-size: 20px;
 }
 
 #bloco-central{
@@ -21,19 +37,22 @@ body, html {
     border-radius: 35px;
     gap: 25px;
 }
-#titulo{
+
+#titulo, #main-title{
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: monospace; 
-    font-size: 24px;
 }
 
+#subtitulo{
+    font-size: 24px;
+}
 #main-title{
     font-size: 39px;
 }
 
-#usuario, #senha, #botao-login{
+#usuario, #senha, #usuario_criacao, #senha_criacao, #botao-login, #senha_confirma, #botao-criar-conta{
     font-family: Arial, Helvetica, sans-serif;
     border-radius: 8px;
     border: none;
@@ -44,22 +63,25 @@ body, html {
     box-sizing: border-box; /* o padding não estoura a largura */
 }
 
-#usuario, #senha{
+#usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
     background-color: #022028;
-    color: #164B4D;
-    
+    color: #fff;
 }
 
-#botao-login{
+#usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
+  color:#164B4D;
+}
+
+#botao-login, #botao-criar-conta{
     font-weight: bold;
     transition: color 0.3s;
 }
 
-#botao-login:hover {
+#botao-login:hover, #botao-criar-conta:hover {
     background-color: #d1d1d1;
 }
 
-#botao-criar-conta, #cont-sem-login{
+#direc-criar-conta, #cont-sem-login, #botao-voltar{
     font-family: monospace;
     background-color: transparent;
     border: none;
@@ -77,6 +99,6 @@ body, html {
     gap: 8px;
 }
 
-#botao-criar-conta:hover, #cont-sem-login:hover {
+#direc-criar-conta:hover, #cont-sem-login:hover, #botao-voltar:hover {
     color: #7c7c7c;
-}
+}   

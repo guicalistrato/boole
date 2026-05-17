@@ -1,7 +1,6 @@
-from flask import Flask, render_template, request, session, g, redirect
+from flask import Flask, render_template, request, session, g, redirect, url_for, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
-import sqlite3
 from boole import run_boole
 from funcoes import login_required
 from funcoes import login_required, get_db, obter_historico_chat
@@ -27,71 +26,49 @@ def close_db(e=None):
     if db is not None:
         db.close()
 
-# ============= FUNÇÕES AUXILIARES =============
-
-def salvar_duvida(usuario, pergunta, resposta):
-    try:
-        db = get_db()
-        db.execute(
-            "INSERT INTO duvidas (usuario, pergunta, resposta) VALUES (?, ?, ?)",
-            (usuario, pergunta, resposta)
-        )
-        db.commit()
-        return True
-    except Exception as e:
-        print(f"Erro ao salvar dúvida: {e}")
-        return False
-
-def obter_historico(usuario):
-    try:
-        db = get_db()
-        cursor = db.execute(
-            """SELECT id, pergunta, resposta, data_criacao
-               FROM duvidas
-               WHERE usuario = ?
-               ORDER BY data_criacao DESC""",
-            (usuario,)
-        )
-        return [dict(row) for row in cursor.fetchall()]
-    except Exception as e:
-        print(f"Erro ao obter histórico: {e}")
-        return []
-
-def obter_duvida(usuario, duvida_id):
-    try:
-        db = get_db()
-        resultado = db.execute(
-            """SELECT id, pergunta, resposta, data_criacao
-               FROM duvidas
-               WHERE id = ? AND usuario = ?""",
-            (duvida_id, usuario)
-        ).fetchone()
-        return dict(resultado) if resultado else None
-    except Exception as e:
-        print(f"Erro ao obter dúvida: {e}")
-        return None
-
-def checar_autenticacao():
-    #Retorna (usuario, erro) onde erro é uma resposta Flask ou None. Centraliza a lógica de autenticação usada nas rotas de histórico.
-    if session.get("anonymous"):
-        return None, ({"erro": "Faça login para acessar seu histórico"}, 401)
-    usuario = session.get("user_id")
-    if not usuario:
-        return None, ({"erro": "Não autenticado"}, 401)
-    return usuario, None
-
 # ============= ROTAS =============
-
+# página inicial
 @app.get("/")
-def index_get():
-    return render_template("index.html")
+def index():
+    return redirect("/chat")
 
-@app.post("/")
-def index_post():
+# rota do chat
+@app.get("/chat")
+@app.get("/chat/<id_chat>")
+def chat_get(id_chat=None):
+    # recebe usuário para ser adicionado na saudação, e checar que botao deve ser posto na sidebar
+    usuario = session.get("user_id")
+    if usuario == None:
+        usuario = ""
+    else:
+        usuario = f", {usuario}"
+
+    # checa se há um codigo na id atual para alterar para modo debug
+    if receber_codigo(id_chat) == None:
+        session["debug"] = False
+    
+    else:
+        session["debug"] = True
+
+    return render_template("index.html", id_chat=id_chat, usuario=usuario)
+
+@app.post("/chat")
+@app.post("/chat/<id_chat>")
+def chat_post(id_chat=None):
     dados = request.get_json()
+    
+    # recebe um codigo caso o chat seja de modo debug
+    codigo = None
+    debug = False
+    if session.get("debug") == True:
+        codigo = receber_codigo(id_chat)
+        debug = True
+
     if not dados:
         return {"erro": "Dados não recebidos"}, 400
 
+    num = dados.get('num') # número de perguntas já feitas
+    modelo = dados.get('modelo')
     duvida = dados.get('duvida', '').strip()
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
@@ -102,39 +79,78 @@ def index_post():
     if usuario:
         salvar_duvida(usuario, duvida, resposta_boole)
 
-    return {"resultado": resposta_boole}, 200
+    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
 
-@app.get("/historico")
-def obter_historico_route():
-    usuario, erro = checar_autenticacao()
-    if erro:
-        return erro
+# nova rota de historico
+@app.get("/api/chat/<id_chat>")
+def api_obter_chat_especifico(id_chat):
+    usuario = session.get("user_id")
+    db = get_db()
+    
+    # Busca todas as mensagens desse chat que pertencem a este usuário
+    linhas = db.execute(
+        "SELECT pergunta, resposta, nome_chat FROM duvidas WHERE id_chat = ? AND usuario = ? ORDER BY data_criacao ASC",
+        (id_chat, usuario)
+    ).fetchall()
 
-    return {"duvidas": obter_historico(usuario)}, 200
+    if not linhas:
+        return {"erro": "Chat não encontrado ou não pertence a este usuário"}, 404
 
-@app.get("/historico/<int:duvida_id>")
-def obter_duvida_route(duvida_id):
-    usuario, erro = checar_autenticacao()
-    if erro:
-        return erro
+    # Formata os dados para enviar ao frontend
+    mensagens = [{"pergunta": linha["pergunta"], "resposta": linha["resposta"]} for linha in linhas]
+    nome_chat = linhas[0]["nome_chat"] # O nome_chat se repete, pegamos do primeiro
 
-    duvida = obter_duvida(usuario, duvida_id)
-    if not duvida:
-        return {"erro": "Dúvida não encontrada"}, 404
+    return {"mensagens": mensagens, "nome_chat": nome_chat}, 200
 
-    return duvida, 200
+@app.get("/api/listar_chats")
+def api_listar_chats():
+    usuario = session.get("user_id")
+    db = get_db()
+    
+    # Busca os chats únicos do usuário, ordenando pelo mais recente
+    linhas = db.execute(
+        """
+        SELECT id_chat, nome_chat 
+        FROM duvidas 
+        WHERE usuario = ? 
+        GROUP BY id_chat 
+        ORDER BY MIN(id) DESC
+        """,
+        (usuario,)
+    ).fetchall()
 
-@app.post('/continuar-sem-login')
+    # Formata como uma lista de dicionários
+    chats = [{"id_chat": linha["id_chat"], "nome_chat": linha["nome_chat"]} for linha in linhas]
+
+    return {"chats": chats}, 200
+
+# redireciona para um chat em modo debug
+@app.route('/debug', methods=['GET', 'POST'])
+def debug():
+    if request.method == 'POST':
+        dados = request.get_json()
+        codigo = dados.get('codigo', '')
+        id_chat = criar_id(20)
+        session["debug"] = True
+        salvar_codigo(codigo, id_chat)
+        url = url_for('chat_get', id_chat=id_chat)
+        return jsonify({'redirect': url})  # retorna a URL como JSON
+    else:
+        return render_template('debug.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+@app.get('/continuar-sem-login')
 def continuar_sem_login():
     session.clear()
     session["anonymous"] = True
-    return {"redirect": "/"}, 200
+    return redirect("/chat")
 
 @app.get('/login')
 def login_get():
     if session.get("user_id"):
-        return redirect("/")
-    return render_template('login.html')
+        return redirect("/chat")
 
 @app.post('/login')
 def login_post():
@@ -157,16 +173,9 @@ def login_post():
     if row and check_password_hash(row["senha"], senha):
         session["user_id"] = usuario
         session.pop("anonymous", None)
-        return {"redirect": "/"}, 200
+        return {"redirect": "/chat", "usuario" : usuario}, 200
     else:
-        print('nao ok')
         return {"erro": "Usuário ou senha inválidos"}, 401
-
-@app.get('/criar-conta')
-def criar_conta_get():
-    if session.get("user_id"):
-        return redirect("/")
-    return render_template('criar_conta.html')
 
 @app.post('/criar-conta')
 def criar_conta_post():
@@ -197,7 +206,11 @@ def criar_conta_post():
         (usuario, generate_password_hash(senha))
     )
     db.commit()
-    return {"redirect": "/login"}, 200
+    return {"redirect": "/chat", "usuario" : usuario}, 200
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# logout
+@app.route("/logout")
+def logout():
+    session.clear()
+
+    return redirect("/chat")

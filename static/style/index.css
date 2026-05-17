@@ -8,6 +8,7 @@
   --input-border: rgba(15, 179, 190, 0.18);
 }
 
+/*As funções abaixo são para definir os padrões de estilo do site*/
 * {
   box-sizing: border-box;
 }
@@ -22,12 +23,19 @@ body {
 }
 
 body {
-  font-family: "JetBrains Mono", monospace;
+  font-family: monospace;
   background: var(--bg);
   color: var(--text);
 
 }
 
+/*site-wrapper: contém todo o conteúdo do site, incluindo a sidebar e o chat, mexer nele pode dar problema
+com o funcionamento da sidebar, MANTER DISPLAY FLEX
+
+chat-container: contém o conteúdo principal do chat, sendo a barra de input, o título e as mensagens
+MANTER DISPLAY FLEX E FLEX DIRECTION COLUMN
+
+chat-header: o cabeçalho do chat (a saudação que o boole faz em um novo chat)*/
 .site-wrapper{
   width: 100vw;
   height: 100vh;
@@ -52,9 +60,10 @@ body {
   display: flex;
   align-items: flex-start;
   background-color: var(--bg);
-  box-shadow: var(--bg) 0px 5px 15px;
+  box-shadow: var(--bg) 0px 5px 10px;
 }
 
+/*Configurações do botão de abrir sidebar, o hover deixa ele mais visível*/
 .openbtn {
   position: absolute;
   top: 24px;
@@ -77,6 +86,8 @@ body {
   opacity: 1;
 }
 
+/*O conteúdo que fica dentro do header (que está algumas linhas acima)
+chat-title e chat-subtitle estão contidos dentro do header-content, que está contido dentro do chat-header*/
 .header-content {
   width: min(100%, 640px);
   margin: 108px auto 0;
@@ -87,7 +98,7 @@ body {
   margin: 0 0 18px;
   font-size: clamp(2rem, 3.4vw, 3.15rem);
   font-weight: 700;
-  font-family: "Courier New", Courier, monospace;
+  font-family: monospace;
   letter-spacing: 0.5px;
   color: var(--text);
 }
@@ -96,13 +107,15 @@ body {
   margin: 0;
   max-width: 560px;
   font-size: clamp(0.95rem, 1.3vw, 1.15rem);
-  font-family: "Courier New", Courier, monospace;
+  font-family: monospace;
   line-height: 1.25;
   font-weight: 700;
   color: var(--muted);
   white-space: normal;
 }
 
+/*o div principal do chat, contém as mensagens
+MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 .chat-main {
   max-width: 100%;
   min-width: 0;
@@ -119,6 +132,90 @@ body {
   scrollbar-color: rgba(15, 179, 190, 0.35) transparent;
 }
 
+/* container principal do botão de selecionar modelo */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn {
+  background-color: transparent;
+  color: #fff;
+  padding: 10px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+#menu-title{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 5px;
+}
+
+/* caixa do menu (escondida por padrão) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  background-color: var(--bg-2);
+  min-width: 280px; 
+  max-width: 350px; 
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+  z-index: 1;
+  border-radius: 6px;
+  padding: 0;
+  margin-top: 5px;
+  list-style: none;
+}
+
+/* Estilo dos links/itens dentro do dropdown */
+.dropdown-content li a {
+  color: #333333;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+/* Remove a borda do último item */
+.dropdown-content li:last-child a {
+  border-bottom: none;
+}
+
+/* estilo do título */
+.dropdown-content strong {
+  display: block;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+/* estilo da legenda */
+.dropdown-content p {
+  margin: 0;
+  font-size: 12px;
+  color: #666;
+  line-height: 1.4; 
+}
+
+.dropdown-content li a:hover {
+  background-color: var(--accent);
+}
+
+/* mostra as opções ao passar o mouse pelo container */
+.dropdown:hover {
+  background-color: var(--bg-2);
+  border-radius: 8px;
+}
+
+.dropdown-content.show {
+  display: block;
+}
+
 .chat-messages {
   width: min(100%, 760px);
   flex: 1;
@@ -130,6 +227,7 @@ body {
   margin-bottom: 200px;
 }
 
+/*As duas configurações abaixo são referentes a scrollbar do div chat-main*/
 .chat-main::-webkit-scrollbar {
   width: 8px;
 }
@@ -139,6 +237,8 @@ body {
   border-radius: 10px;
 }
 
+/*Div das mensagens, e sua diferenciação entre mensagem do usuário e do bot
+MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
 .message {
   display: flex;
   width: 100%;
@@ -152,7 +252,10 @@ body {
   justify-content: flex-end;
 }
 
+/*As bolhas de mensagem e a diferenciação da cor da bolha de mensagem do usuário*/
 .bubble {
+  /*Para aumentar ou diminuir a largura das mensagens, mexer na propriedade max-width
+  (no momento ela pega o menor valor entre 560px e 85%px da tela)*/
   max-width: min(560px, 85%);
   display: flex;
   flex-wrap: wrap;
@@ -163,8 +266,10 @@ body {
   font-size: 0.98rem;
   line-height: 1.45;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-  margin-left: 56px;
-  margin-right: 56px;
+  /*Caso queira afastar ou aproximar mais as mensagens, mexer nas margens abaixo
+  (deixar ambas as margens iguais para deixar o chat centralizado)*/
+  margin-left: 100px; 
+  margin-right: 100px;
 }
 
 .message-user .bubble {
@@ -177,11 +282,14 @@ body {
   display: flex;
   justify-content: center;
   background-color: var(--bg);
-  box-shadow: var(--bg) 0px -7px 15px;
+  box-shadow: var(--bg) 0px -15px 10px;
 }
 
+/*chat-form controla o tamanho da caixa de input
+input-wrapper é bolha de input
+input-field é a própria caixa de input */
 #chat-form {
-  width: min(100%, 520px);
+  width: 50%;
 }
 
 .input-wrapper {
@@ -191,7 +299,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 2px 6px 2px 14px;
+  padding: 2px 10px 2px 14px;
   border-radius: 7px;
   background: var(--input-bg);
   border: 1px solid var(--input-border);
@@ -210,7 +318,7 @@ body {
   color: var(--text);
   font-size: 0.86rem;
   line-height: 1.35;
-  font-family: inherit;
+  font-family: Arial, Helvetica, sans-serif;
   resize: none;
   overflow-y: hidden;
   padding-top: 2px;
@@ -222,6 +330,7 @@ body {
   opacity: 1;
 }
 
+/*Scrollbar da caixa de input quando ela cresce até o máximo*/
 .input-field::-webkit-scrollbar {
   width: 6px;
 }
@@ -231,8 +340,10 @@ body {
   border-radius: 8px;
 }
 
+/*Botão de enviar mensagem, controla também o hover*/
 .send-button {
   position: relative;
+  
   width: 38px;
   height: 42px;
   border: 0;
@@ -240,7 +351,7 @@ body {
   color: var(--accent);
   cursor: pointer;
   display: grid;
-  place-items: center;
+  align-self: flex-start;
   font-size: 0;
   flex: 0 0 auto;
   opacity: 0.5;
@@ -258,6 +369,7 @@ body {
   opacity: 1;
 }
 
+/*Configurações para diferentes tipos de telas (com diferentes tamanhos de width)*/
 @media (max-width: 700px) {
   .header-content {
     margin-top: 100px;

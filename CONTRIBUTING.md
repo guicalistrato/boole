@@ -89,12 +89,19 @@ Isso cria as tabelas `usuarios` e `duvidas` em `dados.db`.
 ### Passo 6: Rodar a Aplicação
 
 ```bash
-python app.py
+flask run
 ```
 
 Acesse `http://localhost:5000` no navegador.
 
 ---
+
+Se quiser ver as alterações no código rodando em tempo real, execute:
+
+```bash
+flask --app app.py run --debug
+```
+
 
 ## Estrutura do Projeto
 
@@ -105,6 +112,7 @@ boole/
 ├── db_init.py             # Script de inicialização do banco de dados
 ├── funcoes.py             # Funções auxiliares (decorador @login_required)
 ├── requirements.txt       # Dependências do projeto
+├── test_app.py            # Testes automatizados
 ├── dados.db               # Banco de dados SQLite (gerado automaticamente)
 ├── .env.local             # Variáveis de ambiente (não commit)
 ├── .gitignore             # Arquivos ignorados pelo git
@@ -113,28 +121,24 @@ boole/
 │
 ├── static/                 # Recursos estáticos (Jinja2)
 │   │
-│   ├── images/             # Imagens
-│   │   ├── criar_conta.css # Estilo do componente de criar conta  
-│   │   ├── index.css       # Estilo da página principal 
-│   │   ├── login.css       # Estilo do componente de login
-│   │   └── sidebar.css     # Estilo do componente menu lateral  
+│   ├── images/             # Imagens usadas no site
 │   │
 │   ├── style/              # Arquivos em CSS (estilização)    
-│   │   ├── criar_conta.css # Estilo do componente de criar conta  
 │   │   ├── index.css       # Estilo da página principal 
-│   │   ├── login.css       # Estilo do componente de login
+│   │   ├── login.css       # Estilo do componente de login/signup
 │   │   └── sidebar.css     # Estilo do componente menu lateral
 │   │
 │   └── behavior/           # Arquivos em JavaScript (comportamento)
-│       ├── criar_conta.js  # Comportamento (funções) do componente de criar conta  
+│       ├── signup.js       # Comportamento (funções) do componente de criar conta  
 │       ├── index.js        # Comportamento (funções) da página principal 
 │       ├── login.js        # Comportamento (funções) do componente de login
+│       ├── logout.js       # Comportamento (funções) do botão de logout
 │       └── sidebar.js      # Comportamento (funções) do componente menu lateral
 │
 ├── templates/             # Templates HTML (Jinja2)
 │   ├── index.html         # Página principal (chat com Boole)
-│   ├── login.html         # Página de login
-│   └── criar_conta.html   # Página de criar conta
+│   ├── login.html         # Componente pop-up de login/signup
+│   └── sidebar.html       # Componente menu lateral
 │
 ├── docs/                  # Documentação adicional
 │   ├── estrutura.txt      # Informações sobre schema SQL
@@ -188,23 +192,23 @@ Use convenção clara:
 
 ```bash
 # Features novas
-feature/descrição-da-feature
+feature/descrição-da-feature/nome-autor
 
 # Correções de bugs
-fix/descrição-do-bug
+fix/descrição-do-bug/nome-autor
 
 # Melhorias de código
-refactor/descrição
+refactor/descrição/nome-autor
 
 # Documentação
-docs/descrição
+docs/descrição/nome-autor
 ```
 
 **Exemplos:**
 ```bash
-git checkout -b feature/adicionar-menu-lateral
-git checkout -b fix/validacao-form-login
-git checkout -b refactor/otimizar-queries-db
+git checkout -b feature/menu-lateral/luiz
+git checkout -b fix/validacao-form-login/gui
+git checkout -b refactor/otimizar-queries-db/leon
 ```
 
 ### Fluxo Padrão
@@ -418,7 +422,7 @@ Descrever em tópicos as mudanças técnicas implementadas nessa branch (ex.: fe
 ## Como Testar
 
 1. `python db_init.py`
-2. `python app.py`
+2. `flask run`
 3. Acessar `http://localhost:5000`
 4. Criar conta e testar novo endpoint
 
@@ -436,7 +440,7 @@ Descrever em tópicos próximas ações ou pendências.
 
 Todo PR precisa de **pelo menos 2 aprovações** antes de merge:
 - 1 do líder técnico (Guilherme)
-- 1 do líder backend (Luiz) ou QA (Keroly)
+- 1 do líder backend (Luiz) ou QA (Keroly) ou PO (Gabriela)
 
 **Comentários esperados:**
 - Segurança (SQL injection, XSS, autenticação)

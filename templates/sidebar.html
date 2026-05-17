@@ -10,17 +10,39 @@
             
         </div>
 
-        <button id="nova-conversa">
-            <img src="{{ url_for('static', filename='images/botao-nova-conversa.png') }}" alt="">
+        <button id="nova-conversa" onclick="nova_conversa()">
+            <img src="{{ url_for('static', filename='images/botao-nova-conversa.png') }}" alt="Nova conversa" style="height: 22px;">
             Nova conversa
         </button>
 
+        <button id="debug_mode" onclick="debug()">
+            Modo Debug
+        </button>
+        
         <div class="content">
+            <span id="conversas-title">Conversas</span>
             <ul id="conversation-list"> <!--estrutura básica do histórico dinâmico-->
-            {% for chat in conversations %}
-                <li><a href="/chat/{{ chat.id }}">{{ chat.title }}</a></li>
-            {% endfor %}
             </ul>
         </div>
+
+        {% if usuario == "" %}
+        <button id="login-or-logout" onclick="abrirLoginPopup()">
+            <img src="{{ url_for('static', filename='images/botao-login.png') }}" alt="Entrar" style="height: 38px;">
+        </button>
+        {% else %}
+        <button id="login-or-logout" onclick="logout()">
+            <img src="{{ url_for('static', filename='images/botao-logout.png') }}" alt="Sair" style="height: 38px;">
+        </button>
+        {% endif %}
+
+    {% include "login.html" %}
+
+    {% include "signup.html" %}
+    
+    </div>
+
     </div>
     <script src="{{ url_for('static', filename='behavior/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='behavior/login.js') }}"></script>
+    <script src="{{ url_for('static', filename='behavior/signup.js') }}"></script>
+    <script src="{{ url_for('static', filename='behavior/logout.js') }}"></script>

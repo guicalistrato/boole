@@ -1,0 +1,16 @@
+<div id="criar_conta_popup" class="popup">
+        <div class="popup-content">
+            <span class="fechar" onclick="fechar_criar_conta()">&times;</span>
+
+            <div id="bloco-central">
+                <span id="main-title">Crie sua conta</span>
+                <input type="text" id="usuario_criacao" placeholder="Usuário">
+                <input type="password" id="senha_criacao" placeholder="Senha">
+                <input type="password" id="senha_confirma" placeholder="Confirme sua senha">
+                <button type="button" onclick="criacao_conta()" id="botao-criar-conta">Continuar</button>
+                <div id="botoes-extras">
+                    <button id="botao-voltar" onclick="fechar_criar_conta(); abrirLoginPopup()" type="button">Voltar</button>
+                    <button id="cont-sem-login" onclick="continuar_sem_login()" type="button">Continuar sem login</button>
+                </div>
+            </div>
+        </div>
