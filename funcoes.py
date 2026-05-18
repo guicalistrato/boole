@@ -1,6 +1,8 @@
 from functools import wraps
 from flask import redirect, render_template, session, g
 import sqlite3
+import time
+from random import randint, seed
 
 # este arquivo foi criado para armazenar funções auxiliares
 

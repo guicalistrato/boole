@@ -42,7 +42,7 @@ CONFIG = genai.types.GenerateContentConfig(
 )
 
 
-def run_boole(pergunta: str, usuario=None) -> str:
+def run_boole(pergunta: str, modelo, usuario=None, num=10, codigo=None) -> str:
     """Recebe uma pergunta do aluno e retorna a resposta do tutor Boole."""
 
     # seleciona o modelo
@@ -64,7 +64,7 @@ def run_boole(pergunta: str, usuario=None) -> str:
         
     try:
         historico = obter_historico_chat(usuario) if usuario else []
-        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}]
+        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}] + [codigo_prompt]
 
         response = client.models.generate_content(
             model="gemini-2.5-flash",
