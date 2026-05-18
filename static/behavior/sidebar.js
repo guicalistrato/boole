@@ -35,7 +35,6 @@ async function carregarSidebarChats() {
                 
                 a.href = '/chat/' + chat.id_chat;
                 a.textContent = chat.nome_chat || 'Nova Conversa';
-                a.textContent = chat.id_chat;
 
                 const currentUrlPath = window.location.pathname;
                 if (currentUrlPath.includes(chat.id_chat)) {
