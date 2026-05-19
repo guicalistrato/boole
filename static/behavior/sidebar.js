@@ -152,17 +152,33 @@ function debug() {
      window.location.href = '/debug'
 }
 
-// função listas colapsáveis - em comentário porque nao vai ser necessária na versão atual, mas pode ser util futuramente
-//document.addEventListener('DOMContentLoaded', () => {
-//    const toggles = document.querySelectorAll('.toggle-button');
-//
-//    toggles.forEach(btn => {
-//      btn.addEventListener('click', function() {
-//            this.classList.toggle('active');
-//          const content = this.nextElementSibling;
-//            if (content) {
-//                content.classList.toggle('open');
-//            }
-//        }); 
-//    });
-//});
+// COMPORTAMENTO MENU DROPDOWN DE PERFIL/LOGIN e SIGNIN
+const botaoPerfil = document.getElementById('perfil-opcoes-btn');
+const menuPerfil = document.getElementById('perfil-opcoes');
+
+// abre/fecha o menu ao clicar no botão
+botaoPerfil.addEventListener('click', function(event) {
+  event.stopPropagation();
+  menuPerfil.classList.toggle('show');
+});
+
+// captura o clique em um item do menu para atualizar o botão
+const itensPerfil = menuPerfil.querySelectorAll('li a');
+
+itensPerfil.forEach(function(itemPerfil) {
+  itemPerfil.addEventListener('click', function(event) {
+    event.preventDefault(); // impede a página de recarregar/pular
+    event.stopPropagation(); // impede o clique de fechar o menu antes da hora
+    
+    // fecha o menu após a seleção
+    menuPerfil.classList.remove('show');
+  });
+});
+
+// fecha o menu se o usuário clicar em qualquer outro lugar da tela
+document.addEventListener('click', function() {
+  if (menuPerfil.classList.contains('show')) {
+    menuPerfil.classList.remove('show');
+  }
+});
+

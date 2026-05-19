@@ -128,16 +128,55 @@
 
 }
 
+.dropdown-perfil {
+  position: relative;
+  display: inline-block;
+}
 
-
-#login-or-logout {
-  margin-top: auto; /* botão fica no final da sidebar */
-  align-self: flex-start;
+.dropdown-btn-perfil {
   background-color: transparent;
-  color: white;
+  color: #fff;
   border: none;
-  padding: 10px;
   cursor: pointer;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.dropdown-perfil-content {
+  display: none;
+  position: absolute;
+  bottom: 90%;
+  left: 15px;
+  background-color: var(--bg-2);
+  min-width: 100px; 
+  max-width: 150px; 
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+  z-index: 1;
+  padding: 0;
+  list-style: none;
+}
+
+/* Estilo dos links/itens dentro do dropdown */
+.dropdown-perfil-content li a {
+  color: #fff;
+  padding: 6px 8px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+  background-color: #022C2D;
+}
+
+.dropdown-perfil-content li a:hover {
+  background-color: var(--accent);
+}
+
+.dropdown-perfil-content li:last-child a {
+  border-bottom: none;
+}
+
+.dropdown-perfil-content.show {
+  display: block;
 }
 
 #conversas-title{
