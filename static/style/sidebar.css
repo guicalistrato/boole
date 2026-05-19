@@ -94,17 +94,51 @@
   transition-duration: 200ms;
 }
 
+.dropdownbtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  height:20px;
+  width:20px; 
+  padding:0px;
+  float:right;
+}
+
 .fixarbtn{
   border:none;
   display:inline;
   color:white;
   background-color:transparent;
-  float:right;
   height:20px;
   width:20px; 
   padding:0px;
   /* alinha o botão melhor com o nome da conversa */
   transform: translateY(7px);
+}
+
+.deletebtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  height:20px;
+  width:20px; 
+  padding:0px;
+}
+
+.dropdownmenu{
+  display:grid;
+  background-color: #164B4D;
+  grid-template-columns: 100%;
+}
+
+.svg_hidden{
+  display:none;
+}
+
+.dropdown_hidden{
+  display:none;
 }
 
 .content ul li a:hover {
@@ -128,8 +162,6 @@
 
 }
 
-
-
 #login-or-logout {
   margin-top: auto; /* botão fica no final da sidebar */
   align-self: flex-start;
@@ -144,4 +176,3 @@
   font-weight: bold;
   font-size: 18px;
 }
-
