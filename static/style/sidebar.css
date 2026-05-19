@@ -85,7 +85,7 @@
   color: white;
 }
 
-#nova-conversa{
+.sidebar-button{
   display: flex;
   align-items: center;
   background-color: transparent;
@@ -96,6 +96,13 @@
   border: none;
   padding: 10px;
 }
+
+.sidebar-button:hover{
+  background-color: #022C2D;
+
+}
+
+
 
 #login-or-logout {
   margin-top: auto; /* botão fica no final da sidebar */

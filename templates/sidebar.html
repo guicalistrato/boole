@@ -10,12 +10,13 @@
             
         </div>
 
-        <button id="nova-conversa" onclick="nova_conversa()">
+        <button class="sidebar-button" id="nova-conversa" onclick="nova_conversa()">
             <img src="{{ url_for('static', filename='images/botao-nova-conversa.png') }}" alt="Nova conversa" style="height: 22px;">
             Nova conversa
         </button>
 
-        <button id="debug_mode" onclick="debug()">
+        <button class="sidebar-button" id="debug_mode" onclick="debug()">
+            <img src="{{ url_for('static', filename='images/botao-debug.png') }}" alt="Modo Debug" style="height: 22px;">
             Modo Debug
         </button>
         
