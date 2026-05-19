@@ -25,15 +25,21 @@
             </ul>
         </div>
 
-        {% if usuario == "" %}
-        <button id="login-or-logout" onclick="abrirLoginPopup()">
-            <img src="{{ url_for('static', filename='images/botao-login.png') }}" alt="Entrar" style="height: 38px;">
-        </button>
-        {% else %}
-        <button id="login-or-logout" onclick="logout()">
-            <img src="{{ url_for('static', filename='images/botao-logout.png') }}" alt="Sair" style="height: 38px;">
-        </button>
-        {% endif %}
+        <div class="sidebar-footer">
+            <div class="usuario-buttons">
+                {% if usuario == "" %}
+                <button id="login-or-logout" onclick="abrirLoginPopup()">
+                    <img src="{{ url_for('static', filename='images/botao-login.png') }}" alt="Entrar" style="height: 38px;">
+                </button>
+                {% else %}
+                <button id="login-or-logout" onclick="logout()">
+                    <img src="{{ url_for('static', filename='images/botao-logout.png') }}" alt="Sair" style="height: 38px;">
+                </button>
+                {% endif %}
+            </div>
+
+            <button id="theme-mode" onclick="toggleTheme()">Mudar modo</button>
+        </div>
 
     {% include "login.html" %}
 

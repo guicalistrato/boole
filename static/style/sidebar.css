@@ -1,15 +1,17 @@
 :root {
   color-scheme: light dark;
+
   --text: #f5f7f7;
   --muted-sidebar: rgb(115, 142, 144);
   --bg-sidebar: #164B4D;
   --accent-sidebar: #022028;
 
-  --text-light: #011014;
+  --text-light: #2c3636;
   --muted-sidebar-light: rgb(115, 142, 144);
-  --bg-sidebar-light: #9BD9D5;
+  --bg-sidebar-light: #cae9e7;
   --accent-sidebar-light: white;
 }
+
 .sidebar {
   height: 100%;
   width: 0; 
@@ -109,11 +111,28 @@
   padding: 10px;
 }
 
+.sidebar-footer {
+  align-self: flex-start;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 #login-or-logout {
   margin-top: auto; /* botão fica no final da sidebar */
   align-self: flex-start;
   background-color: transparent;
   color: light-dark(var(--text-light), var(--text));
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#theme-mode {
+  margin-top: auto;
+  align-self: flex-end;
+  background-color: transparent;
   border: none;
   padding: 10px;
   cursor: pointer;

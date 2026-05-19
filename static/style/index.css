@@ -10,11 +10,11 @@
   --input-border: rgba(15, 179, 190, 0.18);
 
   --bg-light: white;
-  --bg-2-light: #9BD9D5;
+  --bg-2-light: #b8e5e2;
   --accent-light: #104E50;
-  --text-light: #011014;
+  --text-light: #2c3636;
   --muted-light: #104E50;
-  --input-bg-light: rgba(155, 217, 213, 0.78);
+  --input-bg-light: rgba(194, 235, 232, 0.78);
   --input-border-light: rgba(16, 78, 80, 0.18);
 }
 
@@ -336,7 +336,7 @@ input-field é a própria caixa de input */
 }
 
 .input-field::placeholder {
-  color: light-dark(rgba(15, 179, 190, 0.95), rgba(16, 78, 80, 0.95));
+  color: light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
   opacity: 1;
 }
 

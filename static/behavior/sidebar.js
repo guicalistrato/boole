@@ -96,6 +96,18 @@ function debug() {
      window.location.href = '/debug'
 }
 
+//função para alternar entre modo claro e escuro
+function toggleTheme() {
+    //checa o atributo de color-scheme no root e muda o seu valor para o oposto
+    const root = document.documentElement;
+    
+    if (root.style.colorScheme === 'light') {
+        root.style.colorScheme = 'dark';
+    } else {
+        root.style.colorScheme = 'light';
+    }
+}
+
 // função listas colapsáveis - em comentário porque nao vai ser necessária na versão atual, mas pode ser util futuramente
 //document.addEventListener('DOMContentLoaded', () => {
 //    const toggles = document.querySelectorAll('.toggle-button');
