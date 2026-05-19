@@ -31,8 +31,10 @@ async function carregarSidebarChats() {
             data.chats.forEach(chat => {
                 const li = document.createElement('li');
                 const a = document.createElement('a');
-                const fixarbtn = document.createElement('button');
-                
+                const fixarbtn = criar_botão_fixar(li, chat.id_chat);
+                const deletebtn = criar_botão_delete(li, chat.id_chat);
+                const dropdownbtn = criar_botão_dropdown();
+
                 a.href = '/chat/' + chat.id_chat;
                 a.textContent = chat.nome_chat || 'Nova Conversa';
 
@@ -41,62 +43,11 @@ async function carregarSidebarChats() {
                     a.classList.add('active-chat');
                 }
 
-
-                /*Armazenamento da conversa no localStorage
-                  isso serve para manter o pin depois que a pessoa muda de rota
-                  e também para manter mesmo que a pessoa feche a aba */
-                /*OBS: Caso queira que o pin vá embora quando a pessoa fecha a aba
-                       pode mudar de localStorage para sessionStorage */
-                
-                //checagem se essa conversa já foi armazenada
-                if (!localStorage.getItem(chat.id_chat)){//impede que o pin de uma conversa seja resetado
-                    //armazena a conversa
-                    localStorage.setItem(chat.id_chat, "0");//0=pin off, 1=pin on
-                }
-
-                //         Adição de estilização e propriedades
-                fixarbtn.classList = "fixarbtn";
-                //colocar o símbolo svg
-                const símbolo = document
-                                .getElementById("símbolo_fixar")//pega o ícone svg original
-                                .cloneNode(true);//cria uma cópia do ícone svg
-                símbolo.removeAttribute("id");//remove o id para não ter id's duplicados
-                símbolo.style="background:transparent;";//remove o display:none; que esconde o original
-                fixarbtn.appendChild(símbolo);
-
-                //função para fazer ele fixar
-                fixarbtn.onclick = (evento) => {
-                    //navegação para pegar a tag <g> que contém o ícone
-                    const ícone = fixarbtn.firstElementChild.firstElementChild;
-                    //extrai o li a partir do botão
-                    const listItem = fixarbtn.parentElement;
-
-                    listItem.classList.toggle("pinned");
-                    //muda a cor do ícone e atualiza o localStorage
-                    if (listItem.classList.contains("pinned")){
-                        ícone.setAttribute("color","yellow");
-                        localStorage.setItem(chat.id_chat , "1");
-                    }
-                    else{
-                        ícone.setAttribute("color","white");
-                        localStorage.setItem(chat.id_chat, "0");
-                    }
-                }
-
-                //navegação para pegar a tag <g> que contém o ícone
-                const g = fixarbtn.firstElementChild.firstElementChild;
-                //seta a cor e a posição dependendo do localStorage
-                if (localStorage.getItem(chat.id_chat) == "1"){
-                    li.classList.toggle("pinned");
-                    g.setAttribute("color","yellow");
-                }
-                else{
-                    g.setAttribute("color","white");
-                }
-
+                adicionar_opção_dropdown(dropdownbtn, fixarbtn);
+                adicionar_opção_dropdown(dropdownbtn, deletebtn);
 
                 li.appendChild(a);
-                li.appendChild(fixarbtn);
+                li.appendChild(dropdownbtn);
                 conversationList.appendChild(li);
             });
         } else {
@@ -106,6 +57,99 @@ async function carregarSidebarChats() {
     } catch (error) {
         console.error("Erro ao montar a sidebar:", error);
     }
+}
+
+function criar_botão_fixar(li, id_chat){//recebe o elemento <li> que corresponde à conversa
+    const fixarbtn = document.createElement('button');
+    const listItem = li; //para evitar modificações acidentais
+
+    if (!localStorage.getItem(id_chat)){
+        localStorage.setItem(id_chat, "off");
+    }
+
+    fixarbtn.classList = "fixarbtn";
+    const svg = document.getElementById("símbolo_fixar")
+                        .cloneNode(true);
+    svg.removeAttribute("id");
+    svg.classList.remove("svg_hidden");
+    fixarbtn.appendChild(svg);
+
+    //a tag <g> que contém o ícone
+    const ícone = svg.firstElementChild;
+    if (localStorage.getItem(id_chat) == "on"){
+        listItem.classList.toggle("pinned");
+        ícone.setAttribute("color","yellow");
+    }
+    else{
+        ícone.setAttribute("color","white");
+    }
+
+    fixarbtn.onclick = () => {
+        listItem.classList.toggle("pinned");
+        if (listItem.classList.contains("pinned")){
+            ícone.setAttribute("color","yellow");
+            localStorage.setItem(id_chat , "on");
+        }
+        else{
+            ícone.setAttribute("color","white");
+            localStorage.setItem(id_chat, "off");
+        }
+    }
+
+    return fixarbtn;
+
+}
+
+function criar_botão_delete(li, id_chat){//recebe o elemento <li> que corresponde à conversa
+    const deletebtn = document.createElement('button');
+    const listItem = li; //para evitar modificações acidentais
+
+    deletebtn.classList = "deletebtn";
+    
+    const svg = document.getElementById("símbolo_delete");
+    svg.removeAttribute("id");
+    svg.classList.remove("svg_hidden");
+    deletebtn.appendChild(svg);
+
+    deletebtn.onclick = () => {
+        listItem.remove()
+        localStorage.removeItem(id_chat)
+        //aqui teria o fetch que removeria a conversa da base de dados
+    }
+
+    return deletebtn;
+}
+
+function criar_botão_dropdown(){
+    const dropdownbtn = document.createElement('button');
+
+    dropdownbtn.classList = "dropdownbtn";
+
+    const svg = document.getElementById("símbolo_dropdown");
+    svg.removeAttribute("id");
+    svg.classList.remove("svg_hidden");
+    dropdownbtn.appendChild(svg);
+
+    const dropdownmenu = document.createElement('div')
+    dropdownmenu.classList.add("dropdownmenu");
+    dropdownmenu.classList.add("dropdown_hidden");
+    dropdownbtn.appendChild(dropdownmenu)
+
+    dropdownbtn.onclick = () => {
+        dropdownmenu.classList.toggle("dropdown_hidden");
+    }
+
+    dropdownbtn.dropdownmenu = () => {return dropdownmenu}
+
+    return dropdownbtn;
+}
+
+function adicionar_opção_dropdown(botão_dropdown, novo_botão){
+    const dropdownbtn = botão_dropdown;
+    const dropdownmenu = dropdownbtn.dropdownmenu();//função que eu adicionei na criação de dropdownbtn
+    const newbtn = novo_botão;
+
+    dropdownmenu.appendChild(newbtn);
 }
 
 // abrir um novo chat
