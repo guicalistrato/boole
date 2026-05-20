@@ -115,6 +115,11 @@ function nova_conversa() {
 
 window.carregarSidebarChats = carregarSidebarChats;
 
+// controle de popups 
+function abrirPerfilPopup() {
+    document.getElementById("editar-perfil-popup").style.display = "block";
+}
+
 function abrirLoginPopup() {
     document.getElementById("loginPopup").style.display = "block";
 }
@@ -129,6 +134,10 @@ function fecharLoginPopup() {
 
 function fechar_criar_conta() {
     document.getElementById("criar_conta_popup").style.display = "none";
+}
+
+function fechar_editar_perfil() {
+    document.getElementById("editar-perfil-popup").style.display = "none";
 }
 
 function esconder_login() {
@@ -152,17 +161,61 @@ function debug() {
      window.location.href = '/debug'
 }
 
-// função listas colapsáveis - em comentário porque nao vai ser necessária na versão atual, mas pode ser util futuramente
-//document.addEventListener('DOMContentLoaded', () => {
-//    const toggles = document.querySelectorAll('.toggle-button');
-//
-//    toggles.forEach(btn => {
-//      btn.addEventListener('click', function() {
-//            this.classList.toggle('active');
-//          const content = this.nextElementSibling;
-//            if (content) {
-//                content.classList.toggle('open');
-//            }
-//        }); 
-//    });
-//});
+// COMPORTAMENTO MENU DROPDOWN DE PERFIL/LOGIN e SIGNIN
+const botaoPerfil = document.getElementById('perfil-opcoes-btn');
+const menuPerfil = document.getElementById('perfil-opcoes');
+
+// abre/fecha o menu ao clicar no botão
+botaoPerfil.addEventListener('click', function(event) {
+  event.stopPropagation();
+  menuPerfil.classList.toggle('show');
+});
+
+// captura o clique em um item do menu para atualizar o botão
+const itensPerfil = menuPerfil.querySelectorAll('li a');
+
+itensPerfil.forEach(function(itemPerfil) {
+  itemPerfil.addEventListener('click', function(event) {
+    event.preventDefault(); // impede a página de recarregar/pular
+    event.stopPropagation(); // impede o clique de fechar o menu antes da hora
+    
+    // fecha o menu após a seleção
+    menuPerfil.classList.remove('show');
+  });
+});
+
+// fecha o menu se o usuário clicar em qualquer outro lugar da tela
+document.addEventListener('click', function() {
+  if (menuPerfil.classList.contains('show')) {
+    menuPerfil.classList.remove('show');
+  }
+});
+
+//Função pra mudar ícone na sidebar
+/*function changeButtonIcon() {
+  const imgElement = document.getElementById('profile-icon');
+  const currentSrc = imgElement.getAttribute('src');
+
+  if (currentSrc === '/static/images/botao-menu-perfil-onclick.png') {
+    imgElement.setAttribute('src', '/static/images/botao-menu-perfil.png');
+    imgElement.style.height = '40px';
+  } else {
+    imgElement.setAttribute('src', '/static/images/botao-menu-perfil-onclick.png');
+    imgElement.style.height = '42px';
+  }
+}
+*/
+
+// COMPORTAMENTO DO ÍCONE DE PERFIL DO MENU DROPDOWN QUANDO CLICADO
+const menuButton = document.querySelector('.profile-icon');
+
+menuButton.addEventListener('click', function(event) {
+
+    //impede o link de atualizar a página imediatamente se for um '#'
+    event.preventDefault(); 
+
+    // toggle (mudança) de classe pra ativar o efeito de outline no css
+    this.classList.toggle('profile-icon-active');
+  });
+;
+
