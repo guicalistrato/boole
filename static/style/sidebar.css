@@ -103,6 +103,8 @@
   width:20px; 
   padding:0px;
   float:right;
+  /* para alinhar melhor com o nome da conversa */
+  transform: translateY(8px);
 }
 
 .fixarbtn{
@@ -110,11 +112,9 @@
   display:inline;
   color:white;
   background-color:transparent;
-  height:20px;
-  width:20px; 
-  padding:0px;
-  /* alinha o botão melhor com o nome da conversa */
-  transform: translateY(7px);
+  height:25px;
+  width:25px; 
+  padding:5px;
 }
 
 .deletebtn{
@@ -122,15 +122,22 @@
   display:inline;
   color:white;
   background-color:transparent;
-  height:20px;
-  width:20px; 
-  padding:0px;
+  height:25px;
+  width:25px; 
+  padding:5px;
 }
 
 .dropdownmenu{
   display:grid;
-  background-color: #164B4D;
-  grid-template-columns: 100%;
+  position:absolute;
+  background-color: #022028;
+  grid-template-columns: 20% 80%;
+  grid-template-rows: 25px 25px;
+  border-radius:3px;
+  /* gambiarras */
+  width:90px;
+  margin-left: -90px;
+  margin-top:-36px;
 }
 
 .svg_hidden{

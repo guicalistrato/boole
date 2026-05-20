@@ -43,11 +43,11 @@ async function carregarSidebarChats() {
                     a.classList.add('active-chat');
                 }
 
-                adicionar_opção_dropdown(dropdownbtn, fixarbtn);
-                adicionar_opção_dropdown(dropdownbtn, deletebtn);
+                adicionar_opção_dropdown(dropdownbtn, fixarbtn, fixarbtn.labelName);
+                adicionar_opção_dropdown(dropdownbtn, deletebtn, "deletar");
 
-                li.appendChild(a);
                 li.appendChild(dropdownbtn);
+                li.appendChild(a);
                 conversationList.appendChild(li);
             });
         } else {
@@ -68,33 +68,44 @@ function criar_botão_fixar(li, id_chat){//recebe o elemento <li> que correspond
     }
 
     fixarbtn.classList = "fixarbtn";
-    const svg = document.getElementById("símbolo_fixar")
-                        .cloneNode(true);
+    const svg = document.getElementById("símbolo_fixar").cloneNode(true);
     svg.removeAttribute("id");
     svg.classList.remove("svg_hidden");
     fixarbtn.appendChild(svg);
 
     //a tag <g> que contém o ícone
     const ícone = svg.firstElementChild;
+
     if (localStorage.getItem(id_chat) == "on"){
-        listItem.classList.toggle("pinned");
         ícone.setAttribute("color","yellow");
+        listItem.classList.toggle("pinned");
+        fixarbtn.labelName = "desafixar"
     }
     else{
         ícone.setAttribute("color","white");
+        localStorage.setItem(id_chat, "off");
+        fixarbtn.labelName = "fixar"
     }
 
     fixarbtn.onclick = () => {
+        const label = fixarbtn.nextElementSibling;
         listItem.classList.toggle("pinned");
         if (listItem.classList.contains("pinned")){
             ícone.setAttribute("color","yellow");
             localStorage.setItem(id_chat , "on");
+            if (label != null){
+                label.textContent = "desafixar";
+            }
         }
         else{
             ícone.setAttribute("color","white");
             localStorage.setItem(id_chat, "off");
+            if (label != null){
+                label.textContent = "fixar";
+            }
         }
     }
+
 
     return fixarbtn;
 
@@ -106,7 +117,7 @@ function criar_botão_delete(li, id_chat){//recebe o elemento <li> que correspon
 
     deletebtn.classList = "deletebtn";
     
-    const svg = document.getElementById("símbolo_delete");
+    const svg = document.getElementById("símbolo_delete").cloneNode(true);
     svg.removeAttribute("id");
     svg.classList.remove("svg_hidden");
     deletebtn.appendChild(svg);
@@ -125,7 +136,7 @@ function criar_botão_dropdown(){
 
     dropdownbtn.classList = "dropdownbtn";
 
-    const svg = document.getElementById("símbolo_dropdown");
+    const svg = document.getElementById("símbolo_dropdown").cloneNode(true);
     svg.removeAttribute("id");
     svg.classList.remove("svg_hidden");
     dropdownbtn.appendChild(svg);
@@ -136,7 +147,14 @@ function criar_botão_dropdown(){
     dropdownbtn.appendChild(dropdownmenu)
 
     dropdownbtn.onclick = () => {
+        for (element of document.querySelectorAll(".dropdownmenu")){
+            if (!element.classList.contains("dropdown_hidden") && element!=dropdownmenu){
+                element.classList.add("dropdown_hidden");
+                break;
+            }
+        }
         dropdownmenu.classList.toggle("dropdown_hidden");
+        console.log("activated")
     }
 
     dropdownbtn.dropdownmenu = () => {return dropdownmenu}
@@ -144,12 +162,18 @@ function criar_botão_dropdown(){
     return dropdownbtn;
 }
 
-function adicionar_opção_dropdown(botão_dropdown, novo_botão){
+function adicionar_opção_dropdown(botão_dropdown, novo_botão, legenda_opção){
     const dropdownbtn = botão_dropdown;
-    const dropdownmenu = dropdownbtn.dropdownmenu();//função que eu adicionei na criação de dropdownbtn
+    const dropdownmenu = dropdownbtn.dropdownmenu();//método que eu defini na criação de dropdownbtn
     const newbtn = novo_botão;
 
+    const legenda = document.createElement('label');
+    legenda.textContent = legenda_opção;
+    legenda.style = "padding-top:4px;";
+    legenda.onclick = newbtn.onclick;
+
     dropdownmenu.appendChild(newbtn);
+    dropdownmenu.appendChild(legenda);
 }
 
 // abrir um novo chat

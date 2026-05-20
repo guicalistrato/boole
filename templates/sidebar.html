@@ -1,5 +1,4 @@
 <div id="Sidebar" class="sidebar">
-        {% include "símbolos_svg.html" %}
         <div id="top-sidebar">
             <div class="sidebar-title-area">
                 <img src="{{ url_for('static', filename='images/logo-robo.png') }}" alt="Boole" style="height: 30px;">
@@ -44,6 +43,9 @@
     </div>
 
     </div>
+    
+    {% include "símbolos_svg.html" %}
+
     <script src="{{ url_for('static', filename='behavior/sidebar.js') }}"></script>
     <script src="{{ url_for('static', filename='behavior/login.js') }}"></script>
     <script src="{{ url_for('static', filename='behavior/signup.js') }}"></script>
