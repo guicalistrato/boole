@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 from boole import run_boole
-
-from funcoes import get_db, salvar_duvida, criar_id, salvar_codigo, receber_codigo
+from funcoes import login_required, get_db, obter_historico_chat, receber_codigo, salvar_duvida, criar_id, salvar_codigo
 
 # ============= CONFIGURAÇÃO =============
 
@@ -73,9 +72,8 @@ def chat_post(id_chat=None):
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
-    resultados = run_boole(duvida, num, modelo, codigo)
-    resposta_boole = resultados[0]
-    titulo = resultados[1] 
+    usuario = session.get("user_id")
+    resposta_boole = run_boole(duvida, modelo, usuario, num, codigo)
 
     if not id_chat:
         # Se não recebemos um id_chat na URL, significa que é a primeira mensagem
@@ -85,10 +83,10 @@ def chat_post(id_chat=None):
         # Se já temos o id_chat na URL, apenas continuamos usando ele!
         novo_chat = False
 
-    usuario = session.get("user_id")
-    salvar_duvida(usuario, duvida, resposta_boole, titulo, id_chat)
+    if usuario:
+        salvar_duvida(usuario, duvida, resposta_boole[0], resposta_boole[1], id_chat)
 
-    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
+    return {"resultado": resposta_boole, "titulo": resposta_boole[1], "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
 
 # nova rota de historico
 @app.get("/api/chat/<id_chat>")

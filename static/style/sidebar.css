@@ -63,11 +63,6 @@
   color: #fff;
 }
 
-.content ul {
-  list-style: none;
-  padding: 10px 0px;
-  margin: 0;
-}
 
 .content ul li a {
   color: grey;
@@ -81,11 +76,42 @@
   padding: 8px 8px 8px 8px;
 }
 
+.content ul {
+  list-style: none;
+  padding: 10px 0px;
+  margin: 0;
+  /*adicionei para conseguir mudar a ordem dos elementos*/
+  display:grid;
+  grid-template-columns: 100%;
+}
+
+.pinned{
+  order:-1;
+}
+
+.ícone_pin{
+  /* deixa a transição um pouco menos feia */
+  transition-duration: 200ms;
+}
+
+.fixarbtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  float:right;
+  height:20px;
+  width:20px; 
+  padding:0px;
+  /* alinha o botão melhor com o nome da conversa */
+  transform: translateY(7px);
+}
+
 .content ul li a:hover {
   color: white;
 }
 
-#nova-conversa{
+.sidebar-button{
   display: flex;
   align-items: center;
   background-color: transparent;
@@ -96,6 +122,13 @@
   border: none;
   padding: 10px;
 }
+
+.sidebar-button:hover{
+  background-color: #022C2D;
+
+}
+
+
 
 #login-or-logout {
   margin-top: auto; /* botão fica no final da sidebar */
