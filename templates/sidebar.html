@@ -37,7 +37,7 @@
 
             <ul class="dropdown-perfil-content" id="perfil-opcoes">
                 <li>
-                    <a class="acao-perfil" href="/templates/perfil.html">Perfil</a>
+                    <a class="acao-perfil" onclick="abrirPerfilPopup()" href="#">Perfil</a>
                 </li>
                 <li>
                     {% if usuario == "" %}
@@ -53,6 +53,8 @@
                 
             </ul>
         </div>
+
+    <!--{% include "login.html" %} deixando comentado pq por algum motivo isso tá quebrando o site-->
 
     {% include "login.html" %}
 

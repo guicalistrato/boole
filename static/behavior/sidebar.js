@@ -115,6 +115,11 @@ function nova_conversa() {
 
 window.carregarSidebarChats = carregarSidebarChats;
 
+// controle de popups 
+function abrirPerfilPopup() {
+    document.getElementById("editar-perfil-popup").style.display = "block";
+}
+
 function abrirLoginPopup() {
     document.getElementById("loginPopup").style.display = "block";
 }
@@ -129,6 +134,10 @@ function fecharLoginPopup() {
 
 function fechar_criar_conta() {
     document.getElementById("criar_conta_popup").style.display = "none";
+}
+
+function fechar_editar_perfil() {
+    document.getElementById("editar-perfil-popup").style.display = "none";
 }
 
 function esconder_login() {
