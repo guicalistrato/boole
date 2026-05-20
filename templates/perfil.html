@@ -4,15 +4,25 @@
             <span class="fechar" onclick="fechar_editar_perfil()">&times;</span>
 
             <div id="bloco-central">
-                <span id="main-title">Seu perfil</span>
-                <p id="subtitulo">Gerencie suas informações</p>
+                <div id="titulo">
+                    <span id="main-title">Seu perfil</span>
+                    <span id="subtitulo">Gerencie suas informações</span>
+                </div>
+
                 <div id="update-info">
+                    {% if usuario == "" %}
+                    <span id="info-sem-login">Para acessar suas informações, faça login:</span>
+                    <button id="botao-redirect-login" class="acao-perfil" onclick="abrirLoginPopup()" href="#">
+                            Entrar
+                    </button>
+                    {% else %}
                     <input type="text" id="nome_edicao" placeholder="Nome">
                     <input type="text" id="usuario_edicao" placeholder="Usuário">
                     <input type="password" id="senha_edicao" placeholder="Senha">
                     <input type="password" id="senha_confirma_mudanca" placeholder="Confirme sua senha">
                     <button type="button" id="botao-cancelar">Cancelar</button>
-                    <button type="button" onclick="" id="botao-confirma-mudancas">Confirmar</button>
+                    <button type="button" onclick="" id="botao-confirma-mudancas">Salvar</button>
+                    {% endif %}
                 </div>
 
             </div>
