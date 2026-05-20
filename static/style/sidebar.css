@@ -183,6 +183,24 @@
   display: block;
 }
 
+.profile-icon {
+  width: 40px;      
+  height: 40px;      
+  
+  border-radius: 50%; /* transforma o elemento em um círculo */
+  
+  /* 'border' em vez de 'outline' para respeitar o border-radius */
+  border: 2px solid transparent; 
+  object-fit: cover; 
+  
+  outline: 0px solid transparent;
+  transition: outline 0.3s ease; /* transição */
+}
+
+.profile-icon-active {
+  border: 2px solid #022028; /* aparecer contorno quando clicado */
+}
+
 #conversas-title{
   font-weight: bold;
   font-size: 18px;

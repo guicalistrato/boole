@@ -182,3 +182,31 @@ document.addEventListener('click', function() {
   }
 });
 
+//Função pra mudar ícone na sidebar
+/*function changeButtonIcon() {
+  const imgElement = document.getElementById('profile-icon');
+  const currentSrc = imgElement.getAttribute('src');
+
+  if (currentSrc === '/static/images/botao-menu-perfil-onclick.png') {
+    imgElement.setAttribute('src', '/static/images/botao-menu-perfil.png');
+    imgElement.style.height = '40px';
+  } else {
+    imgElement.setAttribute('src', '/static/images/botao-menu-perfil-onclick.png');
+    imgElement.style.height = '42px';
+  }
+}
+*/
+
+// COMPORTAMENTO DO ÍCONE DE PERFIL DO MENU DROPDOWN QUANDO CLICADO
+const menuButton = document.querySelector('.profile-icon');
+
+menuButton.addEventListener('click', function(event) {
+
+    //impede o link de atualizar a página imediatamente se for um '#'
+    event.preventDefault(); 
+
+    // toggle (mudança) de classe pra ativar o efeito de outline no css
+    this.classList.toggle('profile-icon-active');
+  });
+;
+
