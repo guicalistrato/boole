@@ -224,6 +224,29 @@ def criar_conta_post():
 
     return {"redirect": "/chat", "usuario" : usuario}, 200
 
+# mudar dados do perfil
+@app.post('/perfil')
+def alterar_dados():
+    dados = request.get_json()
+
+    usuario_antigo = session.get("user_id")
+
+    # receber dados novos
+    nome = dados.get('nome')
+    usuario = dados.get('usuario', '').strip()
+    senha = dados.get('senha', '')
+    senha_confirma = dados.get('senha_confirma', '')
+
+    # atualiza tabelas SQL com novos dados
+    if senha == senha_confirma:
+        db = get_db()
+        db.execute("UPDATE duvidas SET usuario = ? WHERE usuario = ?", (usuario, usuario_antigo))
+        db.execute("UPDATE usuarios SET usuario = ?, senha = ?, nome = ? WHERE usuario = ?", (usuario, generate_password_hash(senha), nome, usuario_antigo))
+        db.commit()
+        session["user_id"] = usuario
+
+    return {"redirect": "/chat"}, 200
+
 # logout
 @app.route("/logout")
 def logout():
