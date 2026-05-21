@@ -25,20 +25,20 @@
 
       <div class="header-content">
         
-        {% if usuario == "" %}
+        {% if nome == "" %}
         <h1 class="chat-title" id="chat-title" data-role="chat-title">
           >_ Olá, Dev!
         </h1>
         {% else %}
         <h1 class="chat-title" id="chat-title" data-role="chat-title">
-          >_ Olá{{ usuario }}!
+          >_ Olá{{ nome }}!
         </h1>        
         {% endif %}
 
         <p class="chat-subtitle" id="chat-subtitle">
           Eu sou o Boole, o seu tutor de programação. Me pergunte sobre alguma linguagem, uma dúvida ou código seu.
         </p>
-        {% if usuario == "" %}
+        {% if nome == "" %}
         <p class="chat-subtitle" id="chat-subtitle">
           Para acessar mais funções, como o histórico de conversas, faça login clicando na sidebar ao lado.
         </p>
