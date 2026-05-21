@@ -15,7 +15,7 @@
             Nova conversa
         </button>
 
-        <button class="sidebar-button" id="debug_mode" onclick="debug()">
+        <button class="sidebar-button" id="debug_mode" onclick="debug()" href="/chat?modo=debug">
             <img src="{{ url_for('static', filename='images/botao-debug.png') }}" alt="Modo Debug" style="height: 22px;">
             Modo Debug
         </button>
@@ -26,15 +26,34 @@
             </ul>
         </div>
 
-        {% if usuario == "" %}
-        <button id="login-or-logout" onclick="abrirLoginPopup()">
-            <img src="{{ url_for('static', filename='images/botao-login.png') }}" alt="Entrar" style="height: 38px;">
-        </button>
-        {% else %}
-        <button id="login-or-logout" onclick="logout()">
-            <img src="{{ url_for('static', filename='images/botao-logout.png') }}" alt="Sair" style="height: 38px;">
-        </button>
-        {% endif %}
+        <div class="dropdown-perfil">
+            <button class="dropdown-btn-perfil" id="perfil-opcoes-btn">
+              <div id="menu-title">
+                <img class="profile-icon" src="{{ url_for('static', filename='images/botao-menu-perfil.png') }}" alt="Perfil">
+              </div>
+
+            </button>
+
+            <ul class="dropdown-perfil-content" id="perfil-opcoes">
+                <li>
+                    <a class="acao-perfil" onclick="abrirPerfilPopup()" href="#">Perfil</a>
+                </li>
+                <li>
+                    {% if nome == "" %}
+                        <a class="acao-perfil" onclick="abrirLoginPopup()" href="#">
+                            Entrar
+                        </a>
+                    {% else %}
+                        <a class="acao-perfil" onclick="logout()" href="#">
+                            Sair
+                        </a>
+                    {% endif %}
+                </li>
+                
+            </ul>
+        </div>
+
+    {% include "perfil.html" %}
 
     {% include "login.html" %}
 
@@ -47,6 +66,7 @@
     {% include "símbolos_svg.html" %}
 
     <script src="{{ url_for('static', filename='behavior/sidebar.js') }}"></script>
+    <script src="{{ url_for('static', filename='behavior/perfil.js') }}"></script>
     <script src="{{ url_for('static', filename='behavior/login.js') }}"></script>
     <script src="{{ url_for('static', filename='behavior/signup.js') }}"></script>
     <script src="{{ url_for('static', filename='behavior/logout.js') }}"></script>

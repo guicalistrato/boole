@@ -6,7 +6,7 @@
   <title>Boole</title>
   <link rel="stylesheet" href="{{url_for('static', filename='style/index.css')}}" />
   <link rel="stylesheet" href="{{url_for('static', filename='style/sidebar.css')}}"/>
-  <link rel="stylesheet" href="{{url_for('static', filename='style/login.css')}}"/>
+  <link rel="stylesheet" href="{{url_for('static', filename='style/popup.css')}}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
@@ -25,20 +25,20 @@
 
       <div class="header-content">
         
-        {% if usuario == "" %}
+        {% if nome == "" %}
         <h1 class="chat-title" id="chat-title" data-role="chat-title">
           >_ Olá, Dev!
         </h1>
         {% else %}
         <h1 class="chat-title" id="chat-title" data-role="chat-title">
-          >_ Olá{{ usuario }}!
+          >_ Olá{{ nome }}!
         </h1>        
         {% endif %}
 
         <p class="chat-subtitle" id="chat-subtitle">
           Eu sou o Boole, o seu tutor de programação. Me pergunte sobre alguma linguagem, uma dúvida ou código seu.
         </p>
-        {% if usuario == "" %}
+        {% if nome == "" %}
         <p class="chat-subtitle" id="chat-subtitle">
           Para acessar mais funções, como o histórico de conversas, faça login clicando na sidebar ao lado.
         </p>
