@@ -92,6 +92,20 @@ def chat_post(id_chat=None):
 
     return {"resultado": resposta_boole, "titulo": resposta_boole[1], "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
 
+# rota para deletar conversas
+@app.route('/chat/<id_chat>', methods=['DELETE'])
+def deletar_conversa(id_chat):
+    db = get_db()
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM duvidas WHERE id_chat = ?", (id_chat,))
+    db.commit()
+    
+    if cursor.rowcount == 0:
+        return jsonify({'erro': 'Conversa não encontrada'}), 404
+    
+    return jsonify({'mensagem': 'Conversa deletada com sucesso'}), 200
+
 # nova rota de historico
 @app.get("/api/chat/<id_chat>")
 def api_obter_chat_especifico(id_chat):
