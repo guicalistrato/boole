@@ -30,8 +30,8 @@
     flex-direction: column;
     width: 400px;
     align-items: center;
-    background-color: #164B4D;
-    color: #fff;
+    background-color: light-dark(var(--bg-sidebar-light), var(--bg-sidebar));
+    color: light-dark(var(--text-light), var(--text));
     font-family: Arial, Helvetica, sans-serif;
     padding: 20px;
     border-radius: 35px;
@@ -64,12 +64,12 @@
 }
 
 #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
-    background-color: #022028;
-    color: #fff;
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
 #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
-  color:#164B4D;
+  color:light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
 }
 
 #botao-login, #botao-criar-conta{
@@ -86,7 +86,7 @@
     background-color: transparent;
     border: none;
     text-decoration: underline;
-    color: #fff; 
+    color: white;
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;

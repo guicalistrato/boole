@@ -1,6 +1,6 @@
 :root {
   /*A propriedade color-scheme muda a paleta de cores do site para modo claro ou modo escuro*/
-  color-scheme: light dark;
+  color-scheme: dark;
   --bg: #022028;
   --bg-2: #0d3a43;
   --accent: #0fb3be;
