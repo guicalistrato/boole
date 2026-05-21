@@ -218,6 +218,10 @@ def criar_conta_post():
         (usuario, nome, generate_password_hash(senha))
     )
     db.commit()
+
+    session["user_id"] = usuario
+    session.pop("anonymous", None)
+
     return {"redirect": "/chat", "usuario" : usuario}, 200
 
 # logout
