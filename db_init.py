@@ -10,6 +10,7 @@ def init_db():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS usuarios (
                 usuario TEXT PRIMARY KEY,
+                nome TEXT NOT NULL,
                 senha TEXT NOT NULL
             )
         """)
