@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 from boole import run_boole
-from funcoes import login_required
-from funcoes import login_required, get_db, obter_historico_chat
+from funcoes import get_db, salvar_duvida, salvar_codigo, receber_codigo, criar_id
 
 # ============= CONFIGURAÇÃO =============
 
@@ -56,7 +55,7 @@ def chat_get(id_chat=None):
 @app.post("/chat/<id_chat>")
 def chat_post(id_chat=None):
     dados = request.get_json()
-    
+
     # recebe um codigo caso o chat seja de modo debug
     codigo = None
     debug = False
@@ -67,19 +66,24 @@ def chat_post(id_chat=None):
     if not dados:
         return {"erro": "Dados não recebidos"}, 400
 
-    num = dados.get('num') # número de perguntas já feitas
+    num = dados.get('num')  # número de perguntas já feitas
     modelo = dados.get('modelo')
     duvida = dados.get('duvida', '').strip()
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
+    # se não há id_chat, cria um novo
+    novo_chat = id_chat is None
+    if novo_chat:
+        id_chat = criar_id(20)
+
     usuario = session.get("user_id")
-    resposta_boole = run_boole(duvida, usuario)
+    resposta_boole, titulo = run_boole(duvida, usuario, modelo=modelo, codigo=codigo, num=num)
 
     if usuario:
-        salvar_duvida(usuario, duvida, resposta_boole)
+        salvar_duvida(usuario, duvida, resposta_boole, titulo if num <= 2 else None, id_chat)
 
-    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
+    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug": debug}, 200
 
 # nova rota de historico
 @app.get("/api/chat/<id_chat>")
@@ -138,8 +142,6 @@ def debug():
     else:
         return render_template('debug.html')
 
-if __name__ == "__main__":
-    app.run(debug=True)
 
 @app.get('/continuar-sem-login')
 def continuar_sem_login():
@@ -214,3 +216,6 @@ def logout():
     session.clear()
 
     return redirect("/chat")
+
+if __name__ == "__main__":
+    app.run(debug=True)
