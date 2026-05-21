@@ -1,7 +1,7 @@
 <div id="Sidebar" class="sidebar">
         <div id="top-sidebar">
             <div class="sidebar-title-area">
-                <img src="{{ url_for('static', filename='images/logo-robo.png') }}" alt="Boole" style="height: 30px;">
+                <img src="{{ url_for('static', filename='images/logo-robo.png') }}" id="boole-icon" alt="Boole" style="height: 30px;">
                 <span id="top-sidebar-title">Sua área</span>
             </div>
             <div>
@@ -11,7 +11,7 @@
         </div>
 
         <button id="nova-conversa" onclick="nova_conversa()">
-            <img src="{{ url_for('static', filename='images/botao-nova-conversa.png') }}" alt="Nova conversa" style="height: 22px;">
+            <img src="{{ url_for('static', filename='images/botao-nova-conversa.png') }}" id="new-chat-icon" alt="Nova conversa" style="height: 22px;">
             Nova conversa
         </button>
 
@@ -29,16 +29,18 @@
             <div class="usuario-buttons">
                 {% if usuario == "" %}
                 <button id="login-or-logout" onclick="abrirLoginPopup()">
-                    <img src="{{ url_for('static', filename='images/botao-login.png') }}" alt="Entrar" style="height: 38px;">
+                    <img src="{{ url_for('static', filename='images/botao-login.png') }}" id="login-icon" alt="Entrar" style="height: 38px;">
                 </button>
                 {% else %}
                 <button id="login-or-logout" onclick="logout()">
-                    <img src="{{ url_for('static', filename='images/botao-logout.png') }}" alt="Sair" style="height: 38px;">
+                    <img src="{{ url_for('static', filename='images/botao-logout.png') }}" id="logout-icon" alt="Sair" style="height: 38px;">
                 </button>
                 {% endif %}
             </div>
 
-            <button id="theme-mode" onclick="toggleTheme()">Mudar modo</button>
+            <button id="theme-mode" onclick="toggleTheme()">
+                <img src="{{ url_for('static', filename='images/theme-icon.png') }}" id="theme-icon" alt="Mudar tema" style="height: 38px;">
+            </button>
         </div>
 
     {% include "login.html" %}

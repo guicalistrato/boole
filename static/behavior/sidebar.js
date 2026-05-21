@@ -98,13 +98,44 @@ function debug() {
 
 //função para alternar entre modo claro e escuro
 function toggleTheme() {
-    //checa o atributo de color-scheme no root e muda o seu valor para o oposto
+    //pega a referência do elemento root para poder alterar o color-scheme do site
     const root = document.documentElement;
-    
+
+    //pega as referências de imagens de todos os ícones no site
+    const logo_icon = document.getElementById('boole-icon');
+    const theme_icon = document.getElementById('theme-icon');
+    const login_icon = document.getElementById('login-icon');
+    const logout_icon = document.getElementById('logout-icon');
+    const new_chat_icon = document.getElementById('new-chat-icon');
+    const dropdown_icon = document.getElementById('dropdown-icon');
+    const send_icon = document.getElementById('send-icon');
+    const menu_icon = document.getElementById('menu-icon');
+
+    //mudança do tema de claro para escuro junto com a mudança das imagens
     if (root.style.colorScheme === 'light') {
         root.style.colorScheme = 'dark';
-    } else {
+
+        //if statement para evitar erros caso algum dos ícones não esteja presente na página
+        if (logo_icon) logo_icon.src = "/static/images/logo-robo.png";
+        if (theme_icon) theme_icon.src = "/static/images/theme-icon.png";
+        if (login_icon) login_icon.src = "/static/images/botao-login.png";
+        if (logout_icon) logout_icon.src = "/static/images/botao-logout.png";
+        if (new_chat_icon) new_chat_icon.src = "/static/images/botao-nova-conversa.png";
+        if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir.png";
+        if (send_icon) send_icon.src = "/static/images/send_icon.png";
+        if (menu_icon) menu_icon.src = "/static/images/menu_icon.png";
+    } 
+    else {
         root.style.colorScheme = 'light';
+
+        if (logo_icon) logo_icon.src = "/static/images/logo-robo-light.png";
+        if (theme_icon) theme_icon.src = "/static/images/theme-icon-light.png";
+        if (login_icon) login_icon.src = "/static/images/botao-login-light.png";
+        if (logout_icon) logout_icon.src = "/static/images/botao-logout-light.png";
+        if (new_chat_icon) new_chat_icon.src = "/static/images/botao-nova-conversa-light.png";
+        if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir-light.png";
+        if (send_icon) send_icon.src = "/static/images/send_icon-light.png";
+        if (menu_icon) menu_icon.src = "/static/images/menu_icon-light.png";
     }
 }
 

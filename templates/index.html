@@ -20,7 +20,7 @@
 
       <header class="chat-header" id="chat-header" data-section="header">
       <div>
-        <a href="javascript:void(0)" id="openbtn" onclick="openSidebar()"><img src="{{url_for('static', filename='images/menu_icon.png')}}" alt="Menu" class="openbtn"></a>
+        <a href="javascript:void(0)" id="openbtn" onclick="openSidebar()"><img src="{{url_for('static', filename='images/menu_icon.png')}}" id="menu-icon" alt="Menu" class="openbtn"></a>
       </div>
 
       <div class="header-content">
@@ -70,7 +70,7 @@
             <button class="dropdown-btn" id="modelo">
               <div id="menu-title">
                 <span>Padrão</span> 
-                <img src="{{url_for('static', filename='images/dropdown-expandir.png')}}" alt="Expandir" style="height: 16px;">
+                <img src="{{url_for('static', filename='images/dropdown-expandir.png')}}" id="dropdown-icon" alt="Expandir" style="height: 16px;">
               </div>
 
             </button>
@@ -107,7 +107,7 @@
             data-action="send-message"
             aria-label="Enviar mensagem"
           >
-            <img src="{{url_for ('static', filename='images/send_icon.png')}}" width="38px" height="38px">
+            <img src="{{url_for ('static', filename='images/send_icon.png')}}" id="send-icon" width="38px" height="38px">
           </button>
         </div>
       </form>
