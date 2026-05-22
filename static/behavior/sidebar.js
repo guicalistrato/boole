@@ -1,9 +1,24 @@
 // função fechar sidebar
-window.closeSidebar = function() {
+closeSidebar = function() {
     document.getElementById("Sidebar").style.width = "0";
     document.getElementById("chat-container").style.marginLeft = "0";
     document.getElementById("openbtn").style.visibility = 'visible';
 };
+
+// função abrir sidebar
+openSidebar = function () {
+  const sidebar = document.getElementById('Sidebar');
+  const menu_button = document.getElementById('openbtn');
+  const container = document.getElementById('chat-container');
+
+  if (!sidebar || !container) {
+    return;
+  }
+
+  menu_button.style.visibility = 'hidden';
+  sidebar.style.width = '300px';  
+};
+
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarSidebarChats();
@@ -259,21 +274,6 @@ document.addEventListener('click', function() {
   }
 });
 
-//Função pra mudar ícone na sidebar
-/*function changeButtonIcon() {
-  const imgElement = document.getElementById('profile-icon');
-  const currentSrc = imgElement.getAttribute('src');
-
-  if (currentSrc === '/static/images/botao-menu-perfil-onclick.png') {
-    imgElement.setAttribute('src', '/static/images/botao-menu-perfil.png');
-    imgElement.style.height = '40px';
-  } else {
-    imgElement.setAttribute('src', '/static/images/botao-menu-perfil-onclick.png');
-    imgElement.style.height = '42px';
-  }
-}
-*/
-
 // COMPORTAMENTO DO ÍCONE DE PERFIL DO MENU DROPDOWN QUANDO CLICADO
 const menuButton = document.querySelector('.profile-icon');
 
@@ -300,6 +300,7 @@ function toggleTheme() {
     const dropdown_icon = document.getElementById('dropdown-icon');
     const send_icon = document.getElementById('send-icon');
     const menu_icon = document.getElementById('menu-icon');
+    const debug_icon = document.getElementById('debug-icon');
 
     //mudança do tema de claro para escuro junto com a mudança das imagens
     if (root.style.colorScheme === 'light') {
@@ -314,6 +315,7 @@ function toggleTheme() {
         if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir.png";
         if (send_icon) send_icon.src = "/static/images/send_icon.png";
         if (menu_icon) menu_icon.src = "/static/images/menu_icon.png";
+        if (debug_icon) debug_icon.src = "static/images/botao-debug.png"
     } 
     else {
         root.style.colorScheme = 'light';
@@ -326,5 +328,6 @@ function toggleTheme() {
         if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir-light.png";
         if (send_icon) send_icon.src = "/static/images/send_icon-light.png";
         if (menu_icon) menu_icon.src = "/static/images/menu_icon-light.png";
+        if (debug_icon) debug_icon.src = "static/images/botao-debug-light.png"
     }
 }

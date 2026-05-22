@@ -16,7 +16,7 @@
         </button>
 
         <button class="sidebar-button" id="debug_mode" onclick="debug()" href="/chat?modo=debug">
-            <img src="{{ url_for('static', filename='images/botao-debug.png') }}" alt="Modo Debug" style="height: 22px;">
+            <img src="{{ url_for('static', filename='images/botao-debug.png') }}" id="debug-icon" alt="Modo Debug" style="height: 22px;">
             Modo Debug
         </button>
         
@@ -51,6 +51,10 @@
                 </li>
                 
             </ul>
+
+            <button id="theme-mode" onclick="toggleTheme()"><img src="{{ url_for('static', filename='images/theme-icon.png') }}" alt="Mudar Modo" style="height: 38px;"></button>
+
+        </div>
         </div>
 
     {% include "perfil.html" %}
