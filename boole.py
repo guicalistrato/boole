@@ -70,8 +70,7 @@ def run_boole(pergunta: str, usuario=None, modelo=None, codigo=None, num=0) -> s
 
     try:
         historico = obter_historico_chat(usuario) if usuario else []
-        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}] + [codigo_prompt]
-
+        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}]
         response = client.models.generate_content(
             model=modelo_id,
             contents=contents,
