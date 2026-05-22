@@ -2,8 +2,7 @@ from functools import wraps
 from flask import redirect, render_template, session, g
 import sqlite3
 import time
-from random import randint, seed
-
+from random import seed, randint
 # este arquivo foi criado para armazenar funções auxiliares
 
 # protege paginas que precisam de login
@@ -27,12 +26,12 @@ def obter_historico_chat(usuario):
     """Retorna as mensagens anteriores do usuário no formato para o Gemini."""
     db = get_db()
     linhas = db.execute(
-        "SELECT pergunta, resposta FROM duvidas WHERE usuario = ? ORDER BY data_criacao ASC",
+        "SELECT pergunta, resposta FROM duvidas WHERE usuario = ? ORDER BY data_criacao DESC LIMIT 20",
         (usuario,)
     ).fetchall()
 
     historico = []
-    for linha in linhas:
+    for linha in reversed(linhas):  # inverte para que a ordem seja do mais antigo para o mais recente
         historico.append({"role": "user",  "parts": [{"text": linha["pergunta"]}]})
         historico.append({"role": "model", "parts": [{"text": linha["resposta"]}]})
     return historico
