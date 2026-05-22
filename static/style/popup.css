@@ -33,17 +33,22 @@
     background-color: light-dark(var(--bg-sidebar-light), var(--bg-sidebar));
     color: light-dark(var(--text-light), var(--text));
     font-family: Arial, Helvetica, sans-serif;
-    padding: 20px;
+    padding: 30px;
     border-radius: 35px;
     gap: 25px;
 }
 
-#titulo, #main-title{
+#titulo, #main-title, #info-sem-login{
     display: flex;
     flex-direction: column;
     align-items: center;
     font-family: monospace; 
 }
+
+ #info-sem-login{
+    font-size: 13px;
+    text-align: center;
+ }
 
 #subtitulo{
     font-size: 24px;
@@ -52,7 +57,16 @@
     font-size: 39px;
 }
 
-#usuario, #senha, #usuario_criacao, #senha_criacao, #botao-login, #senha_confirma, #botao-criar-conta{
+#login, #info, #update-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #botao-login, 
+#senha_confirma, #botao-criar-conta, #nome_edicao, #usuario_edicao, #senha_edicao, 
+#senha_confirma_mudanca, #botao-cancelar, #botao-confirma-mudancas, #botao-redirect-login{
     font-family: Arial, Helvetica, sans-serif;
     border-radius: 8px;
     border: none;
@@ -72,14 +86,20 @@
   color:light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
 }
 
-#botao-login, #botao-criar-conta{
+#botao-login, #botao-criar-conta, #botao-cancelar, #botao-confirma-mudancas, #botao-redirect-login{
     font-weight: bold;
-    transition: color 0.3s;
+    transition: color, background-color 0.3s;
 }
 
-#botao-login:hover, #botao-criar-conta:hover {
+#botao-login:hover, #botao-criar-conta:hover,
+#botao-confirma-mudancas:hover, #botao-redirect-login:hover {
     background-color: #d1d1d1;
 }
+
+ #botao-cancelar:hover{
+    background-color: red;
+    color: #fff;
+ }
 
 #direc-criar-conta, #cont-sem-login, #botao-voltar{
     font-family: monospace;

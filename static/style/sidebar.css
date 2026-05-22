@@ -79,11 +79,6 @@
   color: light-dark(var(--text-light), var(--text));
 }
 
-.content ul {
-  list-style: none;
-  padding: 10px 0px;
-  margin: 0;
-}
 
 .content ul li a {
   color: light-dark(var(--muted-sidebar-light), var(--muted-sidebar));
@@ -97,11 +92,83 @@
   padding: 8px 8px 8px 8px;
 }
 
+.content ul {
+  list-style: none;
+  padding: 10px 0px;
+  margin: 0;
+  /*adicionei para conseguir mudar a ordem dos elementos*/
+  display:grid;
+  grid-template-columns: 100%;
+}
+
+.pinned{
+  order:-1;
+}
+
+.ícone_pin{
+  /* deixa a transição um pouco menos feia */
+  transition-duration: 200ms;
+}
+
+.dropdownbtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  height:20px;
+  width:20px; 
+  padding:0px;
+  float:right;
+  /* para alinhar melhor com o nome da conversa */
+  transform: translateY(8px);
+}
+
+.fixarbtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  height:25px;
+  width:25px; 
+  padding:5px;
+}
+
+.deletebtn{
+  border:none;
+  display:inline;
+  color:white;
+  background-color:transparent;
+  height:25px;
+  width:25px; 
+  padding:5px;
+}
+
+.dropdownmenu{
+  display:grid;
+  position:absolute;
+  background-color: #022028;
+  grid-template-columns: 20% 80%;
+  grid-template-rows: 25px 25px;
+  border-radius:3px;
+  /* gambiarras */
+  width:90px;
+  margin-left: -90px;
+  margin-top:-36px;
+}
+
+.svg_hidden{
+  display:none;
+}
+
+.dropdown_hidden{
+  display:none;
+}
+
 .content ul li a:hover {
   color: light-dark(var(--text-light), var(--text));
 }
 
-#nova-conversa{
+.sidebar-button{
   display: flex;
   align-items: center;
   background-color: transparent;
@@ -124,6 +191,14 @@
 #login-or-logout {
   margin-top: auto; /* botão fica no final da sidebar */
   align-self: flex-start;
+}
+
+.dropdown-perfil {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn-perfil {
   background-color: transparent;
   color: light-dark(var(--text-light), var(--text));
   border: none;
@@ -136,12 +211,71 @@
   align-self: flex-end;
   background-color: transparent;
   border: none;
-  padding: 10px;
   cursor: pointer;
+  margin-left: 10px;
+  margin-bottom: 10px;
+
+}
+
+.dropdown-perfil-content {
+  display: none;
+  position: absolute;
+  bottom: 90%;
+  left: 15px;
+  background-color: var(--bg-2);
+  min-width: 100px; 
+  max-width: 150px; 
+  box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
+  z-index: 1;
+  padding: 0;
+  list-style: none;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Estilo dos links/itens dentro do dropdown */
+.dropdown-perfil-content li a {
+  color: #fff;
+  padding: 6px 8px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+  background-color: #022C2D;
+
+}
+
+.dropdown-perfil-content li a:hover {
+  background-color: var(--accent);
+}
+
+.dropdown-perfil-content li:last-child a {
+  border-bottom: none;
+}
+
+.dropdown-perfil-content.show {
+  display: block;
+}
+
+.profile-icon {
+  width: 40px;      
+  height: 40px;      
+  
+  border-radius: 50%; /* transforma o elemento em um círculo */
+  
+  /* 'border' em vez de 'outline' para respeitar o border-radius */
+  border: 2px solid transparent; 
+  object-fit: cover; 
+  
+  outline: 0px solid transparent;
+  transition: outline 0.3s ease; /* transição */
+}
+
+.profile-icon-active {
+  border: 2px solid #022028; /* aparecer contorno quando clicado */
 }
 
 #conversas-title{
   font-weight: bold;
   font-size: 18px;
 }
-
