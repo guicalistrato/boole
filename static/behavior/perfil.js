@@ -1,10 +1,10 @@
-function criacao_conta() {
-    const nome = document.getElementById('nome').value;
-    const usuario = document.getElementById('usuario_criacao').value;
-    const senha = document.getElementById('senha_criacao').value;
-    const senha_confirma = document.getElementById('senha_confirma').value;
+function alterar_dados() {
+    const nome = document.getElementById('nome_edicao').value;
+    const usuario = document.getElementById('usuario_edicao').value;
+    const senha = document.getElementById('senha_edicao').value;
+    const senha_confirma = document.getElementById('senha_confirma_mudanca').value;
 
-    fetch('/criar-conta', {
+    fetch('/perfil', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import os
 from google import genai
 from dotenv import load_dotenv
+from funcoes import obter_historico_chat
 
 load_dotenv(".env.local")
 
@@ -41,7 +42,7 @@ CONFIG = genai.types.GenerateContentConfig(
 )
 
 
-def run_boole(pergunta: str, num, modelo, codigo) -> str:
+def run_boole(pergunta: str, modelo, usuario=None, num=10, codigo=None) -> str:
     """Recebe uma pergunta do aluno e retorna a resposta do tutor Boole."""
 
     # seleciona o modelo
@@ -62,9 +63,12 @@ def run_boole(pergunta: str, num, modelo, codigo) -> str:
         codigo_prompt = f"\nTrabalhe sobre este código base. Se o aluno se questionar sobre o uso de um código, ele está falando sobre este: {codigo}"
         
     try:
+        historico = obter_historico_chat(usuario) if usuario else []
+        contents = historico + [{"role": "user", "parts": [{"text": pergunta}]}] + [codigo_prompt]
+
         response = client.models.generate_content(
-            model=modelo,
-            contents=pergunta+codigo_prompt,
+            model="gemini-2.5-flash",
+            contents=contents,
             config=CONFIG
         )
         # se for a primeira mensagem, gera um título

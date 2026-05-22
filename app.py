@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, session, g, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_session import Session
 from boole import run_boole
-
-from funcoes import get_db, salvar_duvida, criar_id, salvar_codigo, receber_codigo
+from funcoes import login_required, get_db, obter_historico_chat, receber_codigo, salvar_duvida, criar_id, salvar_codigo
 
 # ============= CONFIGURAÇÃO =============
 
@@ -36,12 +35,16 @@ def index():
 @app.get("/chat")
 @app.get("/chat/<id_chat>")
 def chat_get(id_chat=None):
-    # recebe usuário para ser adicionado na saudação, e checar que botao deve ser posto na sidebar
+    # recebe nome atraves do email, para ser adicionado na saudação, e checar que botao deve ser posto na sidebar
     usuario = session.get("user_id")
-    if usuario == None:
-        usuario = ""
+    
+    db = get_db()
+    nome = db.execute("SELECT nome FROM usuarios WHERE usuario = ?", (usuario,)).fetchone()
+    
+    if nome == None:
+        nome = ""
     else:
-        usuario = f", {usuario}"
+        nome = f", {nome[0]}"
 
     # checa se há um codigo na id atual para alterar para modo debug
     if receber_codigo(id_chat) == None:
@@ -50,7 +53,7 @@ def chat_get(id_chat=None):
     else:
         session["debug"] = True
 
-    return render_template("index.html", id_chat=id_chat, usuario=usuario)
+    return render_template("index.html", id_chat=id_chat, nome=nome)
 
 @app.post("/chat")
 @app.post("/chat/<id_chat>")
@@ -73,9 +76,8 @@ def chat_post(id_chat=None):
     if not duvida:
         return {"erro": "Dúvida não pode estar vazia"}, 400
 
-    resultados = run_boole(duvida, num, modelo, codigo)
-    resposta_boole = resultados[0]
-    titulo = resultados[1] 
+    usuario = session.get("user_id")
+    resposta_boole = run_boole(duvida, modelo, usuario, num, codigo)
 
     if not id_chat:
         # Se não recebemos um id_chat na URL, significa que é a primeira mensagem
@@ -85,10 +87,10 @@ def chat_post(id_chat=None):
         # Se já temos o id_chat na URL, apenas continuamos usando ele!
         novo_chat = False
 
-    usuario = session.get("user_id")
-    salvar_duvida(usuario, duvida, resposta_boole, titulo, id_chat)
+    if usuario:
+        salvar_duvida(usuario, duvida, resposta_boole[0], resposta_boole[1], id_chat)
 
-    return {"resultado": resposta_boole, "titulo": titulo, "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
+    return {"resultado": resposta_boole, "titulo": resposta_boole[1], "id_chat": id_chat, "novo_chat": novo_chat, "debug" : debug}, 200
 
 # nova rota de historico
 @app.get("/api/chat/<id_chat>")
@@ -193,7 +195,8 @@ def criar_conta_post():
 
     if not dados:
         return {"erro": "Dados não recebidos"}, 400
-
+    
+    nome = dados.get('nome', '').strip()
     usuario = dados.get('usuario', '').strip()
     senha = dados.get('senha', '')
     senha_confirma = dados.get('senha_confirma', '')
@@ -208,14 +211,41 @@ def criar_conta_post():
     if db.execute(
         "SELECT 1 FROM usuarios WHERE usuario = ?", (usuario,)
     ).fetchone():
-        return {"erro": "Esse nome de usuário já está em uso."}, 400
+        return {"erro": "Esse email já está sendo utilizado!"}, 400
 
     db.execute(
-        "INSERT INTO usuarios (usuario, senha) VALUES (?, ?)",
-        (usuario, generate_password_hash(senha))
+        "INSERT INTO usuarios (usuario, nome, senha) VALUES (?, ?, ?)",
+        (usuario, nome, generate_password_hash(senha))
     )
     db.commit()
+
+    session["user_id"] = usuario
+    session.pop("anonymous", None)
+
     return {"redirect": "/chat", "usuario" : usuario}, 200
+
+# mudar dados do perfil
+@app.post('/perfil')
+def alterar_dados():
+    dados = request.get_json()
+
+    usuario_antigo = session.get("user_id")
+
+    # receber dados novos
+    nome = dados.get('nome')
+    usuario = dados.get('usuario', '').strip()
+    senha = dados.get('senha', '')
+    senha_confirma = dados.get('senha_confirma', '')
+
+    # atualiza tabelas SQL com novos dados
+    if senha == senha_confirma:
+        db = get_db()
+        db.execute("UPDATE duvidas SET usuario = ? WHERE usuario = ?", (usuario, usuario_antigo))
+        db.execute("UPDATE usuarios SET usuario = ?, senha = ?, nome = ? WHERE usuario = ?", (usuario, generate_password_hash(senha), nome, usuario_antigo))
+        db.commit()
+        session["user_id"] = usuario
+
+    return {"redirect": "/chat"}, 200
 
 # logout
 @app.route("/logout")
