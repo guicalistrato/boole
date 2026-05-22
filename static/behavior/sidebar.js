@@ -1,9 +1,24 @@
 // função fechar sidebar
-window.closeSidebar = function() {
+closeSidebar = function() {
     document.getElementById("Sidebar").style.width = "0";
     document.getElementById("chat-container").style.marginLeft = "0";
     document.getElementById("openbtn").style.visibility = 'visible';
 };
+
+// função abrir sidebar
+openSidebar = function () {
+  const sidebar = document.getElementById('Sidebar');
+  const menu_button = document.getElementById('openbtn');
+  const container = document.getElementById('chat-container');
+
+  if (!sidebar || !container) {
+    return;
+  }
+
+  menu_button.style.visibility = 'hidden';
+  sidebar.style.width = '300px';  
+};
+
 
 document.addEventListener('DOMContentLoaded', () => {
     carregarSidebarChats();
@@ -258,21 +273,6 @@ document.addEventListener('click', function() {
     menuPerfil.classList.remove('show');
   }
 });
-
-//Função pra mudar ícone na sidebar
-/*function changeButtonIcon() {
-  const imgElement = document.getElementById('profile-icon');
-  const currentSrc = imgElement.getAttribute('src');
-
-  if (currentSrc === '/static/images/botao-menu-perfil-onclick.png') {
-    imgElement.setAttribute('src', '/static/images/botao-menu-perfil.png');
-    imgElement.style.height = '40px';
-  } else {
-    imgElement.setAttribute('src', '/static/images/botao-menu-perfil-onclick.png');
-    imgElement.style.height = '42px';
-  }
-}
-*/
 
 // COMPORTAMENTO DO ÍCONE DE PERFIL DO MENU DROPDOWN QUANDO CLICADO
 const menuButton = document.querySelector('.profile-icon');
