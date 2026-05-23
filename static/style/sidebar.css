@@ -193,9 +193,21 @@
   align-self: flex-start;
 }
 
-.dropdown-perfil {
-  position: relative;
-  display: inline-block;
+#theme-toggle {
+  margin-top: auto;
+  align-self: flex-end;
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar-footer {
+  align-self: flex-start;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
 }
 
 .dropdown-btn-perfil {

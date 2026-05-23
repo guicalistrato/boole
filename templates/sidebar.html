@@ -16,7 +16,7 @@
         </button>
 
         <button class="sidebar-button" id="debug_mode" onclick="debug()" href="/chat?modo=debug">
-            <img src="{{ url_for('static', filename='images/botao-debug.png') }}" alt="Modo Debug" style="height: 22px;">
+            <img src="{{ url_for('static', filename='images/botao-debug.png') }}" id="debug-icon" alt="Modo Debug" style="height: 22px;">
             Modo Debug
         </button>
         
@@ -26,7 +26,7 @@
             </ul>
         </div>
 
-        <div class="dropdown-perfil">
+        <div class="sidebar-footer">
             <button class="dropdown-btn-perfil" id="perfil-opcoes-btn">
               <div id="menu-title">
                 <img class="profile-icon" src="{{ url_for('static', filename='images/botao-menu-perfil.png') }}" alt="Perfil">
@@ -51,6 +51,11 @@
                 </li>
                 
             </ul>
+
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
+                <img src="{{ url_for('static', filename='images/theme-icon.png') }}" id="theme-icon" alt="Mudar tema" style="height: 38px;">
+                Mudar tema
+            </button>
         </div>
 
     {% include "perfil.html" %}
