@@ -156,15 +156,16 @@
       }
     }
 
-  function atualizarTituloConversa(titulo) {
-    // Procura a pill que foi criada na tela
-    const topicPill = chatHeader.querySelector('.topic-pill');
-    
-    // Se ela existir, atualiza o texto
-    if (topicPill) {
-      topicPill.textContent = titulo;
-  }
-  }
+    // atualiza o titulo do chat
+    function atualizarTituloConversa(titulo) {
+      // Procura a pill que foi criada na tela
+      const topicPill = chatHeader.querySelector('.topic-pill');
+      
+      // Se ela existir, atualiza o texto
+      if (topicPill) {
+        topicPill.textContent = titulo;
+      }
+    }
 
     // cria e adiciona uma mensagem (usuario ou bot) no chat
     function appendMessage(author, text) {
@@ -231,13 +232,31 @@
     }
 
     // faz requisição ao backend para obter resposta da IA
+    //agora envia o código do debug junto com a pergunta
     async function requestBotAnswer(question, modelo) {
       // envia pergunta para o servidor usando a URL atual da pagina (/chat ou /chat/id)
       const currentUrl = window.location.pathname;
+      
+      const body = {
+        duvida: question,
+        num: messageCounter,
+        modelo: modelo
+      };
+
+      // se estiver em modo debug, pega o codigo validado e envia junto
+      if (window.DebugAPI && window.DebugAPI.isEnabled()) {
+        try {
+          const debugData = window.DebugAPI.getDebugData();
+          body.codigo = debugData.codigo;
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      }
+
       const response = await fetch(currentUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: JSON.stringify({ duvida: question, num: messageCounter, modelo: modelo })
+        body: JSON.stringify(body)
       });
 
       let data = null;
