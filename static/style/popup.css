@@ -98,7 +98,7 @@
 
 #botao-login:hover, #botao-criar-conta:hover,
 #botao-confirma-mudancas:hover, #botao-redirect-login:hover {
-    background-color: #d1d1d1;
+    background-color: light-dark(var(--accent-sidebar), var(--accent-sidebar-light));
     color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
 }
 
@@ -113,7 +113,7 @@
     background-color: transparent;
     border: none;
     text-decoration: underline;
-    color: white;
+    color: light-dark(var(--muted-light), var(--muted));
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
@@ -127,5 +127,5 @@
 }
 
 #direc-criar-conta:hover, #cont-sem-login:hover, #botao-voltar:hover {
-    color: #7c7c7c;
+    color: light-dark(var(--accent-sidebar), var(--accent));
 }   
