@@ -13,7 +13,6 @@
 .sidebar {
   height: 100%;
   width: 0; 
-  position: absolute;
   z-index: 1000;
   top: 0;
   left: 0;
@@ -189,14 +188,26 @@
   flex-direction: row;
 }
 
-#login-or-logout {
-  margin-top: auto; /* botão fica no final da sidebar */
-  align-self: flex-start;
-}
-
 .dropdown-perfil {
   position: relative;
   display: inline-block;
+}
+
+#theme-toggle {
+  margin-top: auto;
+  align-self: flex-end;
+  background-color: transparent;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar-footer {
+  align-self: flex-start;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  flex-direction: row;
 }
 
 .dropdown-btn-perfil {
@@ -269,7 +280,7 @@
   object-fit: cover; 
   
   outline: 0px solid transparent;
-  transition: outline 0.3s ease; /* transição */
+  transition: 0.3s; /* transição */
 }
 
 .profile-icon-active {

@@ -45,10 +45,10 @@
     font-family: monospace; 
 }
 
- #info-sem-login{
+#info-sem-login{
     font-size: 13px;
     text-align: center;
- }
+}
 
 #subtitulo{
     font-size: 24px;
@@ -77,36 +77,43 @@
     box-sizing: border-box; /* o padding não estoura a largura */
 }
 
-#usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
+#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
     background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
     color: light-dark(var(--text-light), var(--text));
 }
 
-#usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
+#nome::placeholder, #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
   color:light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
 }
 
 #botao-login, #botao-criar-conta, #botao-cancelar, #botao-confirma-mudancas, #botao-redirect-login{
     font-weight: bold;
-    transition: color, background-color 0.3s;
+    transition: 0.3s;
+}
+
+#botao-login, #botao-criar-conta, #botao-confirma-mudancas, #botao-redirect-login{
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
 #botao-login:hover, #botao-criar-conta:hover,
 #botao-confirma-mudancas:hover, #botao-redirect-login:hover {
-    background-color: #d1d1d1;
+    background-color: light-dark(var(--accent-sidebar), var(--accent-sidebar-light));
+    color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
 }
 
- #botao-cancelar:hover{
+
+#botao-cancelar:hover{
     background-color: red;
     color: #fff;
- }
+}
 
 #direc-criar-conta, #cont-sem-login, #botao-voltar{
     font-family: monospace;
     background-color: transparent;
     border: none;
     text-decoration: underline;
-    color: white;
+    color: light-dark(var(--muted-light), var(--muted));
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
@@ -120,5 +127,5 @@
 }
 
 #direc-criar-conta:hover, #cont-sem-login:hover, #botao-voltar:hover {
-    color: #7c7c7c;
+    color: light-dark(var(--accent-sidebar), var(--accent));
 }   
