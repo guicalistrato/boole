@@ -27,34 +27,34 @@
         </div>
 
         <div class="sidebar-footer">
-            <button class="dropdown-btn-perfil" id="perfil-opcoes-btn">
-              <div id="menu-title">
-                <img class="profile-icon" src="{{ url_for('static', filename='images/botao-menu-perfil.png') }}" alt="Perfil">
-              </div>
+            <div class="dropdown-perfil">
+                <button class="dropdown-btn-perfil" id="perfil-opcoes-btn">
+                    <div id="menu-title">
+                        <img class="profile-icon" src="{{ url_for('static', filename='images/botao-menu-perfil.png') }}" alt="Perfil">
+                    </div>
+                </button>
 
-            </button>
-
-            <ul class="dropdown-perfil-content" id="perfil-opcoes">
-                <li>
-                    <a class="acao-perfil" onclick="abrirPerfilPopup()" href="#">Perfil</a>
-                </li>
-                <li>
-                    {% if nome == "" %}
-                        <a class="acao-perfil" onclick="abrirLoginPopup()" href="#">
-                            Entrar
-                        </a>
-                    {% else %}
-                        <a class="acao-perfil" onclick="logout()" href="#">
-                            Sair
-                        </a>
-                    {% endif %}
-                </li>
+                <ul class="dropdown-perfil-content" id="perfil-opcoes">
+                    <li>
+                        <a class="acao-perfil" onclick="abrirPerfilPopup()" href="#">Perfil</a>
+                    </li>
+                    <li>
+                        {% if nome == "" %}
+                            <a class="acao-perfil" onclick="abrirLoginPopup()" href="#">
+                                Entrar
+                            </a>
+                        {% else %}
+                            <a class="acao-perfil" onclick="logout()" href="#">
+                                Sair
+                            </a>
+                        {% endif %}
+                    </li>
                 
-            </ul>
+                </ul>
+            </div>
 
             <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">
                 <img src="{{ url_for('static', filename='images/theme-icon.png') }}" id="theme-icon" alt="Mudar tema" style="height: 38px;">
-                Mudar tema
             </button>
         </div>
 

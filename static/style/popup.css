@@ -17,14 +17,6 @@
   position: relative;
 }
 
-.popup-content-signup {
-  margin: auto;
-  padding: 20px;
-  border-radius: 12px;
-  width: 350px;
-  position: relative;
-}
-
 .fechar {
   position: absolute;
   top: 50px;
