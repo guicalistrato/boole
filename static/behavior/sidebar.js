@@ -174,6 +174,7 @@ function criar_botão_dropdown(){
 function adicionar_opção_dropdown(botão_dropdown, novo_botão, legenda_opção){
     const dropdownbtn = botão_dropdown;
     const dropdownmenu = dropdownbtn.dropdownmenu();//método que eu defini na criação de dropdownbtn
+    const dropdowncontainer = document.createElement('div')
     const newbtn = novo_botão;
 
     const legenda = document.createElement('label');
@@ -181,8 +182,12 @@ function adicionar_opção_dropdown(botão_dropdown, novo_botão, legenda_opçã
     legenda.style = "padding-top:4px;";
     legenda.onclick = newbtn.onclick;
 
-    dropdownmenu.appendChild(newbtn);
-    dropdownmenu.appendChild(legenda);
+    dropdowncontainer.classList.add("dropdown_container");
+
+    dropdowncontainer.appendChild(newbtn);
+    dropdowncontainer.appendChild(legenda);
+
+    dropdownmenu.appendChild(dropdowncontainer);
 }
 
 // abrir um novo chat
