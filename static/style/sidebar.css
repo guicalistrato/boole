@@ -280,7 +280,7 @@
   object-fit: cover; 
   
   outline: 0px solid transparent;
-  transition: 0.3s ease; /* transição */
+  transition: 0.3s; /* transição */
 }
 
 .profile-icon-active {
