@@ -101,6 +101,8 @@
   grid-template-columns: 100%;
 }
 
+
+
 .pinned{
   order:-1;
 }
@@ -120,7 +122,8 @@
   padding:0px;
   float:right;
   /* para alinhar melhor com o nome da conversa */
-  transform: translateY(8px);
+  transform: translateY(10px)
+             translateX(-15px);
 }
 
 .fixarbtn{
@@ -141,6 +144,11 @@
   height:25px;
   width:25px; 
   padding:5px;
+}
+
+.dropdown_menu_button_img{
+  margin-top:auto;
+  height:20px;
 }
 
 .dropdownmenu{
