@@ -135,11 +135,20 @@ function criar_botão_delete(li, id_chat){//recebe o elemento <li> que correspon
 
     deletebtn.img = img;
 
-    deletebtn.onclick = () => {
-        listItem.remove()
-        localStorage.removeItem(id_chat)
-        //aqui teria o fetch que removeria a conversa da base de dados
+    deletebtn.onclick = async () => {
+    try {
+        const response = await fetch(`/chat/${id_chat}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) throw new Error('Erro ao deletar');
+
+        listItem.remove();
+        localStorage.removeItem(id_chat);
+    } catch (err) {
+        console.error('Falha ao deletar conversa:', err);
     }
+}
 
     return deletebtn;
 }

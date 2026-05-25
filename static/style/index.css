@@ -233,8 +233,9 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 8px 4px 8px 0;
+  padding: 8px 4px 8px 4px;
   margin-bottom: 200px;
+  align-items: center;
 }
 
 /*As duas configurações abaixo são referentes a scrollbar do div chat-main*/
@@ -252,14 +253,22 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
 .message {
   display: flex;
   width: 100%;
+  padding: 0 350px;  /* cria margens maiores nos lados */
+}
+
+.message-user {
+  justify-content: flex-end; 
 }
 
 .message-bot {
   justify-content: flex-start;
 }
 
-.message-user {
-  justify-content: flex-end;
+.message-user .bubble,
+.message-bot .bubble,
+.message-bot .typing-bubble {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /*As bolhas de mensagem e a diferenciação da cor da bolha de mensagem do usuário*/
@@ -275,11 +284,6 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   color: light-dark(var(--text-light), var(--text));
   font-size: 0.98rem;
   line-height: 1.45;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-  /*Caso queira afastar ou aproximar mais as mensagens, mexer nas margens abaixo
-  (deixar ambas as margens iguais para deixar o chat centralizado)*/
-  margin-left: 100px; 
-  margin-right: 100px;
 }
 
 .message-user .bubble {
