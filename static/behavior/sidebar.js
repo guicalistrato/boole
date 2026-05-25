@@ -83,21 +83,19 @@ function criar_botão_fixar(li, id_chat){//recebe o elemento <li> que correspond
     }
 
     fixarbtn.classList = "fixarbtn";
-    const svg = document.getElementById("símbolo_fixar").cloneNode(true);
-    svg.removeAttribute("id");
-    svg.classList.remove("svg_hidden");
-    fixarbtn.appendChild(svg);
 
-    //a tag <g> que contém o ícone
-    const ícone = svg.firstElementChild;
+    const img = document.getElementById("pin_image-dark").cloneNode();
+    img.id = "";//remove o id para evitar conflitos de id
+    img.style = ""; //remove o display none
+    fixarbtn.appendChild(img)
+
+    fixarbtn.img = img;
 
     if (localStorage.getItem(id_chat) == "on"){
-        ícone.setAttribute("color","yellow");
         listItem.classList.toggle("pinned");
         fixarbtn.labelName = "desafixar"
     }
     else{
-        ícone.setAttribute("color","white");
         localStorage.setItem(id_chat, "off");
         fixarbtn.labelName = "fixar"
     }
@@ -106,14 +104,12 @@ function criar_botão_fixar(li, id_chat){//recebe o elemento <li> que correspond
         const label = fixarbtn.nextElementSibling;
         listItem.classList.toggle("pinned");
         if (listItem.classList.contains("pinned")){
-            ícone.setAttribute("color","yellow");
             localStorage.setItem(id_chat , "on");
             if (label != null){
                 label.textContent = "desafixar";
             }
         }
         else{
-            ícone.setAttribute("color","white");
             localStorage.setItem(id_chat, "off");
             if (label != null){
                 label.textContent = "fixar";
@@ -132,10 +128,12 @@ function criar_botão_delete(li, id_chat){//recebe o elemento <li> que correspon
 
     deletebtn.classList = "deletebtn";
     
-    const svg = document.getElementById("símbolo_delete").cloneNode(true);
-    svg.removeAttribute("id");
-    svg.classList.remove("svg_hidden");
-    deletebtn.appendChild(svg);
+    const img = document.getElementById("delete_image-dark").cloneNode();
+    img.id = "";//remove o id para evitar conflitos de id
+    img.style = ""; //remove o display none
+    deletebtn.appendChild(img)
+
+    deletebtn.img = img;
 
     deletebtn.onclick = () => {
         listItem.remove()
@@ -151,15 +149,19 @@ function criar_botão_dropdown(){
 
     dropdownbtn.classList = "dropdownbtn";
 
-    const svg = document.getElementById("símbolo_dropdown").cloneNode(true);
-    svg.removeAttribute("id");
-    svg.classList.remove("svg_hidden");
-    dropdownbtn.appendChild(svg);
+    const img = document.getElementById("dropdown_image-dark").cloneNode();
+    img.id = "";//remove o id para evitar conflitos de id
+    img.style = ""; //remove o display none
+    dropdownbtn.appendChild(img)
+    
+    dropdownbtn.img = img;
 
     const dropdownmenu = document.createElement('div')
     dropdownmenu.classList.add("dropdownmenu");
     dropdownmenu.classList.add("dropdown_hidden");
     dropdownbtn.appendChild(dropdownmenu)
+
+    dropdownbtn.dropdownmenu = dropdownmenu;
 
     dropdownbtn.onclick = () => {
         for (element of document.querySelectorAll(".dropdownmenu")){
@@ -169,23 +171,22 @@ function criar_botão_dropdown(){
             }
         }
         dropdownmenu.classList.toggle("dropdown_hidden");
-        console.log("activated")
     }
-
-    dropdownbtn.dropdownmenu = () => {return dropdownmenu}
 
     return dropdownbtn;
 }
 
 function adicionar_opção_dropdown(botão_dropdown, novo_botão, legenda_opção){
     const dropdownbtn = botão_dropdown;
-    const dropdownmenu = dropdownbtn.dropdownmenu();//método que eu defini na criação de dropdownbtn
+    const dropdownmenu = dropdownbtn.dropdownmenu;//método que eu defini na criação de dropdownbtn
     const newbtn = novo_botão;
 
     const legenda = document.createElement('label');
     legenda.textContent = legenda_opção;
-    legenda.style = "padding-top:4px;";
+    legenda.style = "padding-top: 4px;";
     legenda.onclick = newbtn.onclick;
+
+    newbtn.legenda = legenda;
 
     dropdownmenu.appendChild(newbtn);
     dropdownmenu.appendChild(legenda);
@@ -343,7 +344,37 @@ function toggleIcons(theme) {
         if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir.png";
         if (send_icon) send_icon.src = "/static/images/send_icon.png";
         if (menu_icon) menu_icon.src = "/static/images/menu_icon.png";
+
+        //pegar os botões da conversa com querySelectorAll porque o número varia
+        const fixarbtns = document.querySelectorAll(".fixarbtn");
+        const deletebtns = document.querySelectorAll(".deletebtn");
+        const dropdownbtns = document.querySelectorAll(".dropdownbtn")
+        
+        const new_fixarbtn_img = document.getElementById("pin_image-dark");
+        const new_deletebtn_img = document.getElementById("delete_image-dark");
+        const new_dropdownbtn_img = document.getElementById("dropdown_image-dark");
+
+        for (let i = 0; i < fixarbtns.length; i+=1){
+            const fixarbtn = fixarbtns[i];
+            
+            fixarbtn.img.src = new_fixarbtn_img.src;
+            fixarbtn.legenda.style.color = "white";
+        }
+        for (let i = 0; i < deletebtns.length; i+=1){
+            const deletebtn = deletebtns[i];
+
+            deletebtn.img.src = new_deletebtn_img.src;
+            deletebtn.legenda.style.color = "white";
+        }
+        for (let i = 0; i < dropdownbtns.length; i+=1){
+            const dropdownbtn = dropdownbtns[i];
+
+            dropdownbtn.img.src = new_dropdownbtn_img.src;
+            dropdownbtn.dropdownmenu.style.backgroundColor = "#022028"
+        }
     }
+    else {
+        root.style.colorScheme = 'light';
 
     else if (theme === 'light') {
         if (logo_icon) logo_icon.src = "/static/images/logo-robo-light.png";
@@ -354,6 +385,34 @@ function toggleIcons(theme) {
         if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir-light.png";
         if (send_icon) send_icon.src = "/static/images/send_icon-light.png";
         if (menu_icon) menu_icon.src = "/static/images/menu_icon-light.png";
+
+        const fixarbtns = document.querySelectorAll(".fixarbtn");
+        const deletebtns = document.querySelectorAll(".deletebtn");
+        const dropdownbtns = document.querySelectorAll(".dropdownbtn")
+        
+        const new_fixarbtn_img = document.getElementById("pin_image-light");
+        const new_deletebtn_img = document.getElementById("delete_image-light");
+        const new_dropdownbtn_img = document.getElementById("dropdown_image-light");
+
+        for (let i = 0; i < fixarbtns.length; i+=1){
+            const fixarbtn = fixarbtns[i];
+            
+            fixarbtn.img.src = new_fixarbtn_img.src;
+            fixarbtn.legenda.style.color = "#022028";
+        }
+        for (let i = 0; i < deletebtns.length; i+=1){
+            const deletebtn = deletebtns[i];
+
+            deletebtn.img.src = new_deletebtn_img.src;
+            deletebtn.legenda.style.color = "#022028";
+
+        }
+        for (let i = 0; i < dropdownbtns.length; i+=1){
+            const dropdownbtn = dropdownbtns[i];
+
+            dropdownbtn.img.src = new_dropdownbtn_img.src;
+            dropdownbtn.dropdownmenu.style.backgroundColor = "white";
+        }
     }
 }
 
