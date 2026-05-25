@@ -131,13 +131,24 @@
   display:grid;
   position:absolute;
   background-color: #022028;
-  grid-template-columns: 20% 80%;
-  grid-template-rows: 25px 25px;
+  grid-template-columns: 100%;
+  grid-template-rows: 25px;
   border-radius:3px;
   /* gambiarras */
   width:90px;
   margin-left: -90px;
   margin-top:-36px;
+}
+
+.dropdown_container{
+  display:grid;
+  grid-template-columns: 20% 80%;
+  grid-template-rows: 25px;
+}
+
+.dropdown_container:hover{
+  background-color: var(--accent);
+  transition: background-color 200ms;
 }
 
 .svg_hidden{
