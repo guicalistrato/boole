@@ -292,6 +292,38 @@ function toggleTheme() {
     //pega a referência do elemento root para poder alterar o color-scheme do site
     const root = document.documentElement;
 
+    //mudança do tema de claro para escuro junto com a mudança das imagens
+    if (root.style.colorScheme === 'light') {
+        root.style.colorScheme = 'dark';
+        localStorage.setItem('theme', 'dark'); //salva o estado do tema para manter consistência entre páginas
+        toggleIcons('dark');
+    }
+
+    else {
+        root.style.colorScheme = 'light';
+        localStorage.setItem('theme', 'light'); //salva estado do tema
+        toggleIcons('light');
+    }
+}
+
+//função para aplicar o tema salvo ao carregar uma página nova
+function aplicarTemaSalvo() {
+    const temaSalvo = localStorage.getItem('theme');
+    const root = document.documentElement;
+
+    if (temaSalvo === 'dark') {
+        root.style.colorScheme = 'dark';
+        toggleIcons('dark');
+    }
+
+    else if (temaSalvo === 'light') {
+        root.style.colorScheme = 'light';
+        toggleIcons('light');
+    }
+}
+
+//função separada para alternar os ícones do site
+function toggleIcons(theme) {
     //pega as referências de imagens de todos os ícones no site
     const logo_icon = document.getElementById('boole-icon');
     const theme_icon = document.getElementById('theme-icon');
@@ -302,11 +334,7 @@ function toggleTheme() {
     const send_icon = document.getElementById('send-icon');
     const menu_icon = document.getElementById('menu-icon');
 
-    //mudança do tema de claro para escuro junto com a mudança das imagens
-    if (root.style.colorScheme === 'light') {
-        root.style.colorScheme = 'dark';
-
-        //if statement para evitar erros caso algum dos ícones não esteja presente na página
+    if (theme === 'dark') {
         if (logo_icon) logo_icon.src = "/static/images/logo-robo.png";
         if (theme_icon) theme_icon.src = "/static/images/theme-icon.png";
         if (login_icon) login_icon.src = "/static/images/botao-menu-perfil.png";
@@ -315,10 +343,9 @@ function toggleTheme() {
         if (dropdown_icon) dropdown_icon.src = "/static/images/dropdown-expandir.png";
         if (send_icon) send_icon.src = "/static/images/send_icon.png";
         if (menu_icon) menu_icon.src = "/static/images/menu_icon.png";
-    } 
-    else {
-        root.style.colorScheme = 'light';
+    }
 
+    else if (theme === 'light') {
         if (logo_icon) logo_icon.src = "/static/images/logo-robo-light.png";
         if (theme_icon) theme_icon.src = "/static/images/theme-icon-light.png";
         if (login_icon) login_icon.src = "/static/images/botao-menu-perfil-light.png";
@@ -329,3 +356,5 @@ function toggleTheme() {
         if (menu_icon) menu_icon.src = "/static/images/menu_icon-light.png";
     }
 }
+
+aplicarTemaSalvo(); //aplica o tema salvo ao carregar a página
