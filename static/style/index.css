@@ -285,11 +285,6 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   /*margin-right: 100px;*/
 }
 
-.message-bot .bubble {
-  /*margin-left: 100px;*/
-  /*margin-right: auto;*/
-}
-
 .message-bot .typing-bubble {
   display: inline-flex;
   align-items: center;
@@ -333,7 +328,7 @@ input-field é a própria caixa de input */
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
 }
 
-.input-field {
+.input-field, .code-input-field {
   flex: 1;
   width: 100%;
   min-width: 0;
@@ -352,17 +347,17 @@ input-field é a própria caixa de input */
   margin: 0;
 }
 
-.input-field::placeholder {
+.input-field::placeholder, .code-input-field::placeholder {
   color: rgba(15, 179, 190, 0.95);
   opacity: 1;
 }
 
 /*Scrollbar da caixa de input quando ela cresce até o máximo*/
-.input-field::-webkit-scrollbar {
+.input-field::-webkit-scrollbar, .code-input-field::-webkit-scrollbar {
   width: 6px;
 }
 
-.input-field::-webkit-scrollbar-thumb {
+.input-field::-webkit-scrollbar-thumb, .code-input-field::-webkit-scrollbar-thumb {
   background: rgba(15, 179, 190, 0.35);
   border-radius: 8px;
 }
