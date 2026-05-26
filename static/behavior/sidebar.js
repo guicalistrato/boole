@@ -382,8 +382,6 @@ function toggleIcons(theme) {
             dropdownbtn.dropdownmenu.style.backgroundColor = "#022028"
         }
     }
-    else {
-        root.style.colorScheme = 'light';
 
     else if (theme === 'light') {
         if (logo_icon) logo_icon.src = "/static/images/logo-robo-light.png";
