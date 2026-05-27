@@ -2,52 +2,62 @@
 <html lang="pt-BR">
 
 <head>
-	<title>Boole - Debug</title>
+    <title>Boole - Debug</title>
   <link rel="stylesheet" href="{{url_for('static', filename='style/index.css')}}" />
   <link rel="stylesheet" href="{{url_for('static', filename='style/sidebar.css')}}"/>
   <link rel="stylesheet" href="{{url_for('static', filename='style/popup.css')}}"/>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+  <style>
+    /* Formatação para a bolha de mensagem do usuario no modo debug */
+    .message.message-user .bubble {
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap; /* preserva espaços e quebras de linha */
+      word-break: break-word; /* Quebra palavras para não estourar o layout */
+      text-align: left;
+    }
+  </style>
 
 </head>
 
 <body>
   <div class="site-wrapper" id="site-wrapper">
     {% include "sidebar.html" %}
-    <div class="chat-container" id="chat-container" data-component="chat">
+    <div class="chat-container" id="chat-container" data-component="chat" data-debug-mode="true">
       <header class="chat-header" id="chat-header" data-section="header">
         <div>
           <a href="javascript:void(0)" id="openbtn" onclick="openSidebar()"><img src="{{url_for('static', filename='images/menu_icon.png')}}" alt="Menu" class="openbtn"></a>
         </div>
 
         <div class="header-content">
-					{% if nome == "" %}
+                    {% if nome == "" %}
           <h1 class="chat-title" id="chat-title" data-role="chat-title">
             >_ Bem vindo(a) ao modo Debug, dev!
           </h1>
-					{% else %}
-					<h1 class="chat-title" id="chat-title" data-role="chat-title">
-						>_ Bem vindo(a) ao modo Debug{{ nome }}!
-					</h1>
-					{% endif %}
+                    {% else %}
+                    <h1 class="chat-title" id="chat-title" data-role="chat-title">
+                        >_ Bem vindo(a) ao modo Debug{{ nome }}!
+                    </h1>
+                    {% endif %}
 
-					<p class="chat-subtitle" id="chat-subtitle">
-          	Aqui, no modo Debug, você pode enviar trechos de código para que eu possa analisar e ajudar a encontrar erros ou sugerir melhorias.
-        	</p>
-        	{% if nome == "" %}
-        	<p class="chat-subtitle" id="chat-subtitle">
-          	Para acessar mais funções, como o histórico de conversas, faça login clicando na sidebar ao lado.
-        	</p>
-        	{% else %}
-        	<p class="chat-subtitle" id="chat-subtitle">
-          	Vamos começar a debugar seu código?
-        	</p>
-        	{% endif %}
+                    <p class="chat-subtitle" id="chat-subtitle">
+              Aqui, no modo Debug, você pode enviar trechos de código para que eu possa analisar e ajudar a encontrar erros ou sugerir melhorias.
+            </p>
+            {% if nome == "" %}
+            <p class="chat-subtitle" id="chat-subtitle">
+              Para acessar mais funções, como o histórico de conversas, faça login clicando na sidebar ao lado.
+            </p>
+            {% else %}
+            <p class="chat-subtitle" id="chat-subtitle">
+              Vamos começar a debugar seu código?
+            </p>
+            {% endif %}
         </div>
       </header>
 
-			<main class="chat-main" id="chat-main" data-section="main">
+            <main class="chat-main" id="chat-main" data-section="main">
       <section
         class="chat-messages"
         id="chat-messages"
@@ -57,31 +67,31 @@
       ></section>
       </main>
 
-			<footer class="chat-input" id="chat-input" data-section="input">
-				<form id="chat-form" data-role="chat-form" action="#" method="post">
-					<div class="input-wrapper">
-						<textarea
-            	class="code-input-field"
-            	id="code-input-field"
-            	name="message"
-            	placeholder="Coloque seu código aqui!"
-            	autocomplete="off"
-            	data-role="message-input"
-            	rows="1"
-            	required
-          	></textarea>
-						<button
-            	type="submit"
-            	class="send-button"
-            	id="send-button"
-            	data-action="send-message"
-            	aria-label="Enviar mensagem"
-          	>
-            	<img src="{{url_for ('static', filename='images/send_icon.png')}}" width="38px" height="38px">
-          	</button>
-					</div>
-				</form>
-			</footer>
+            <footer class="chat-input" id="chat-input" data-section="input">
+                <form id="chat-form" data-role="chat-form" action="#" method="post">
+                    <div class="input-wrapper">
+                        <textarea
+                class="input-field"
+                id="input-field"
+                name="message"
+                placeholder="Cole seu código aqui para debug..."
+                autocomplete="off"
+                data-role="message-input"
+                rows="1"
+                required
+              ></textarea>
+                        <button
+                type="submit"
+                class="send-button"
+                id="send-button"
+                data-action="send-message"
+                aria-label="Enviar mensagem"
+              >
+                <img src="{{url_for ('static', filename='images/send_icon.png')}}" width="38px" height="38px">
+              </button>
+                    </div>
+                </form>
+            </footer>
     </div>
   </div>
 </body>

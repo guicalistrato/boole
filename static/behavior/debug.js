@@ -23,18 +23,16 @@
   document.addEventListener('DOMContentLoaded', initDebugMode);
 
   function initDebugMode() {
-    console.log('[DEBUG] Inicializando...');
-
     const chatContainer = document.getElementById('chat-container');
     const isDebugMode = chatContainer?.getAttribute('data-debug-mode') === 'true';
 
+    debugState.codeElement = document.getElementById('input-field');
+
     if (isDebugMode) {
       enableDebugMode();
+      //createDebugUI();
     }
 
-    setupModelDropdownListener();
-
-    // expoe API para index.js usar
     window.DebugAPI = {
       isEnabled: () => debugState.enabled,
       getCode: () => debugState.code,
@@ -50,10 +48,14 @@
   // Ativa modo debug
   function enableDebugMode() {
     if (debugState.enabled) return;
+
     debugState.enabled = true;
-    createDebugUI();
-    showDebugContainer();
-    focusCodeInput();
+
+    if (debugState.codeElement) {
+      debugState.codeElement.placeholder = 'Cole seu código aqui para debug...';
+      debugState.codeElement.focus();
+      setupCodeInputListener();
+    }
   }
 
   // desativa modo debug
@@ -68,9 +70,9 @@
   function clearDebugCode() {
     debugState.code = '';
     debugState.isValid = false;
+
     if (debugState.codeElement) {
       debugState.codeElement.value = '';
-      updateCodeValidationState();
     }
   }
 
@@ -198,12 +200,19 @@
       return null;
     }
 
-    const validation = validateCode(debugState.code);
+    const trimmed = String(debugState.code || '').trim();
 
-    if (!validation.valid) {
-      throw new Error(`Código inválido: ${validation.error}`);
+    // No modo debug, 
+    if (trimmed.length === 0) {
+      throw new Error('Por favor, cole seu código no campo de entrada');
     }
 
+    // limite mximo apenas
+    if (trimmed.length > MAX_CODE_LENGTH) {
+      throw new Error(`Máximo ${MAX_CODE_LENGTH} caracteres`);
+    }
+
+    debugState.code = trimmed;
     return {
       codigo: debugState.code,
       modo_debug: true,
@@ -252,46 +261,30 @@
     return debugOutput;
   }
 
-  // Detecta quando "Debug" e selecionado
-  function setupModelDropdownListener() {
-    const modelOptions = document.querySelectorAll('#opcoes-modelo a');
-
-    modelOptions.forEach(option => {
-      option.addEventListener('click', (event) => {
-        const selectedValue = option.getAttribute('value');
-        const selectedText = option.querySelector('strong')?.textContent || '';
-
-        if (selectedText.toLowerCase() === 'debug' || selectedValue === '') {
-          enableDebugMode();
-        } else {
-          disableDebugMode();
-        }
-      });
-    });
-  }
-
   // Configura listeners do textarea
   function setupCodeInputListener() {
-    if (!debugState.codeElement) return;
+    if (!debugState.codeElement || debugState.codeElement.dataset.debugBound === 'true') {
+      return;
+    }
 
-    debugState.codeElement.addEventListener('input', (event) => {
+    debugState.codeElement.dataset.debugBound = 'true';
+
+    debugState.codeElement.addEventListener('input', function(event) {
       debugState.code = event.target.value;
-      updateCodeValidationState();
     });
 
-    // permite Tab no textarea
-    debugState.codeElement.addEventListener('keydown', (event) => {
+    debugState.codeElement.addEventListener('keydown', function(event) {
       if (event.key === 'Tab') {
         event.preventDefault();
+
         const start = event.target.selectionStart;
         const end = event.target.selectionEnd;
 
-        event.target.value = 
+        event.target.value =
           event.target.value.substring(0, start) + '\t' + event.target.value.substring(end);
 
         event.target.selectionStart = event.target.selectionEnd = start + 1;
         debugState.code = event.target.value;
-        updateCodeValidationState();
       }
     });
   }
@@ -312,4 +305,5 @@
   window.addEventListener('beforeunload', () => {
     clearDebugCode();
   });
+
 })();
