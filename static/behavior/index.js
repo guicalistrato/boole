@@ -58,9 +58,10 @@
 
     // acessa a variável id_chat que o Flask renderiza ou le direto da URL
     const pathParts = window.location.pathname.split('/');
-    const possibleChatId = pathParts[pathParts.length - 1]; 
-    
-    if (possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
+    const possibleChatId = pathParts[pathParts.length - 1];
+    const isDebugRoute = window.location.pathname === '/debug';
+
+    if (!isDebugRoute && possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
         carregarHistorico(possibleChatId);
     }
 
