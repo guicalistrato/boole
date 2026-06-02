@@ -20,3 +20,14 @@ function alterar_dados() {
             }
         });
 }
+
+function ativarModoEdicao() {
+    document.getElementById("modo-visualizacao").style.display = "none";
+    document.getElementById("modo-edicao").style.display = "flex";
+    document.getElementById("subtitulo").textContent = "Edite suas informações";
+}
+
+function ativarModoVisualizacao() {
+    document.getElementById("modo-edicao").style.display = "none";
+    document.getElementById("modo-visualizacao").style.display = "flex";
+    document.getElementById("subtitulo").textContent = "Gerencie suas informações";}

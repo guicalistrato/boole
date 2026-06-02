@@ -1,30 +1,52 @@
-
 <div id="editar-perfil-popup" class="popup">
-        <div class="popup-content">
-            <span class="fechar" onclick="fechar_editar_perfil()">&times;</span>
+    <div class="popup-content">
+        <span class="fechar" onclick="fechar_editar_perfil()">&times;</span>
 
-            <div id="bloco-central">
-                <div id="titulo">
-                    <span id="main-title">Seu perfil</span>
-                    <span id="subtitulo">Gerencie suas informações</span>
+        <div id="bloco-central">
+            <div id="titulo">
+                <span id="main-title">Seu perfil</span>
+                <span id="subtitulo">Gerencie suas informações</span>
+            </div>
+
+            <div id="update-info">
+                {% if nome == "" %}
+                <span id="info-sem-login">Para acessar suas informações, faça login:</span>
+                <button id="botao-redirect-login" class="acao-perfil" onclick="abrirLoginPopup()">
+                    Entrar
+                </button>
+                {% else %}
+
+                <!-- MODO VISUALIZAÇÃO -->
+                <div id="modo-visualizacao">
+                    <div class="info-display">
+                        <span class="info-label">Nome</span>
+                        <span class="info-valor" id="display-nome">Gabi</span>
+                    </div>
+                    <div class="info-display">
+                        <span class="info-label">E-mail</span>
+                        <span class="info-valor" id="display-usuario">gabtbenevides@gmail.com</span>
+                    </div>
+                    <div class="info-display">
+                        <span class="info-label">Senha</span>
+                        <span class="info-valor" id="display-usuario">********</span>
+                    </div>
+                    <button type="button" id="botao-editar" onclick="ativarModoEdicao()">Editar perfil</button>
                 </div>
 
-                <div id="update-info">
-                    {% if nome == "" %}
-                    <span id="info-sem-login">Para acessar suas informações, faça login:</span>
-                    <button id="botao-redirect-login" class="acao-perfil" onclick="abrirLoginPopup()" href="#">
-                            Entrar
-                    </button>
-                    {% else %}
+                <!-- MODO EDIÇÃO -->
+                <div id="modo-edicao" style="display: none;">
                     <input type="text" id="nome_edicao" placeholder="Nome">
                     <input type="text" id="usuario_edicao" placeholder="Usuário">
                     <input type="password" id="senha_edicao" placeholder="Senha">
                     <input type="password" id="senha_confirma_mudanca" placeholder="Confirme sua senha">
-                    <button type="button" onclick="fechar_editar_perfil()" id="botao-cancelar">Cancelar</button>
-                    <button type="button" onclick="fechar_editar_perfil(); alterar_dados()" id="botao-confirma-mudancas">Salvar</button>
-                    {% endif %}
+                    <div id="botoes-edicao">
+                        <button type="button" onclick="ativarModoVisualizacao()" id="botao-cancelar">Cancelar</button>
+                        <button type="button" onclick="fechar_editar_perfil(); alterar_dados()" id="botao-confirma-mudancas">Salvar</button>
+                    </div>
                 </div>
 
+                {% endif %}
             </div>
         </div>
+    </div>
 </div>
