@@ -30,8 +30,8 @@
     flex-direction: column;
     width: 400px;
     align-items: center;
-    background-color: #164B4D;
-    color: #fff;
+    background-color: light-dark(var(--bg-sidebar-light), var(--bg-sidebar));
+    color: light-dark(var(--text-light), var(--text));
     font-family: Arial, Helvetica, sans-serif;
     padding: 30px;
     border-radius: 35px;
@@ -45,10 +45,10 @@
     font-family: monospace; 
 }
 
- #info-sem-login{
+#info-sem-login{
     font-size: 13px;
     text-align: center;
- }
+}
 
 #subtitulo{
     font-size: 24px;
@@ -77,31 +77,36 @@
     box-sizing: border-box; /* o padding não estoura a largura */
 }
 
-#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma, 
-#nome_edicao, #usuario_edicao, #senha_edicao, #senha_confirma_mudanca{
-    background-color: #022028;
-    color: #fff;
+#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
-#nome::placeholder, #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, 
-#senha_confirma::placeholder, #usuario_criacao::placeholder #nome_edicao::placeholder, 
-#usuario_edicao::placeholder, #senha_edicao::placeholder, #senha_confirma_mudanca::placeholder{
-  color:#164B4D;
+#nome::placeholder, #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
+  color:light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
 }
 
 #botao-login, #botao-criar-conta, #botao-cancelar, #botao-confirma-mudancas, #botao-redirect-login{
     font-weight: bold;
-    transition: color, background-color 0.3s;
+    transition: 0.3s;
 }
 
-#botao-login:hover, #botao-criar-conta:hover, #botao-redirect-login:hover {
-    background-color: #d1d1d1;
+#botao-login, #botao-criar-conta, #botao-confirma-mudancas, #botao-redirect-login{
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
- #botao-cancelar:hover{
-    background-color: #022028;
+#botao-login:hover, #botao-criar-conta:hover,
+#botao-confirma-mudancas:hover, #botao-redirect-login:hover {
+    background-color: light-dark(var(--accent-sidebar), var(--accent-sidebar-light));
+    color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+}
+
+
+#botao-cancelar:hover{
+    background-color: red;
     color: #fff;
- }
+}
 
 #botao-confirma-mudancas:hover{
     background-color: #0fb3be;
@@ -113,7 +118,7 @@
     background-color: transparent;
     border: none;
     text-decoration: underline;
-    color: #fff; 
+    color: light-dark(var(--muted-light), var(--muted));
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
@@ -127,78 +132,5 @@
 }
 
 #direc-criar-conta:hover, #cont-sem-login:hover, #botao-voltar:hover {
-    color: #7c7c7c;
-}  
-
-#modo-visualizacao {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
-
-.info-display {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 322px;
-    width: 85%;
-    background-color: #022028;
-    border-radius: 8px;
-    padding: 10px 15px;
-    box-sizing: border-box;
-}
-
-.info-label {
-    font-size: 11px;
-    color: #164B4D;
-    font-family: monospace
-
-}
-
-.info-valor {
-    font-size: 15px;
-    color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-#botao-editar {
-    font-family: Arial, Helvetica, sans-serif;
-    border-radius: 8px;
-    border: none;
-    min-height: 48px;
-    min-width: 322px;
-    width: 85%;
-    padding: 0 15px;
-    box-sizing: border-box;
-    font-weight: bold;
-    background-color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#botao-editar:hover {
-    background-color: #d1d1d1;
-}
-
-#modo-edicao {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
-
-#modo-edicao #botao-cancelar,
-#modo-edicao #botao-confirma-mudancas {
-    min-width: 0;
-    width: 50%;
-}
-
-#botoes-edicao {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    width: 85%;
-    min-width: 322px;
-}
+    color: light-dark(var(--accent-sidebar), var(--accent));
+}   
