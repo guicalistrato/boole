@@ -108,6 +108,11 @@
     color: #fff;
 }
 
+#botao-confirma-mudancas:hover{
+    background-color: #0fb3be;
+    color:#fff
+}
+
 #direc-criar-conta, #cont-sem-login, #botao-voltar{
     font-family: monospace;
     background-color: transparent;
