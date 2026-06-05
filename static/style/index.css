@@ -266,6 +266,7 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   /*Para aumentar ou diminuir a largura das mensagens, mexer na propriedade max-width
   (no momento ela pega o menor valor entre 560px e 85%px da tela)*/
   max-width: min(560px, 85%);
+  min-width: 0;
   display: block;
   color: var(--text);
   font-size: 0.98rem;
@@ -276,9 +277,9 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
 .bubble pre, .bubble code {
   max-width: 100%;
   overflow-x: auto;
-  display: block;
+  display: inline-block;
+  word-break: normal;
   white-space: pre-wrap;
-  word-break: break-all;
   padding: 2px 4px;
   border-radius: 5px;
 }
@@ -296,7 +297,7 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   /*margin-right: 100px;*/
 }
 
-.message-bot .bubble pre, .message-bot .bubble code {
+.message-bot .bubble code {
   background: rgba(15, 179, 190, 0.18);
 }
 
