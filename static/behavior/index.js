@@ -394,21 +394,6 @@
   });
 })();
 
-// função abrir sidebar
-window.openSidebar = function () {
-  const sidebar = document.getElementById('Sidebar');
-  const container = document.getElementById('chat-container');
-  const menu_button = document.getElementById('openbtn');
-
-  if (!sidebar || !container) {
-    return;
-  }
-
-  menu_button.style.visibility = 'hidden';
-  sidebar.style.width = '350px';
-  /*container.style.marginLeft = '250px';*/
-};
-
 // COMPORTAMENTO MENU DROPDOWN DE SELECIONAR MODELO
 const botao = document.getElementById('modelo');
 const menu = document.getElementById('opcoes-modelo');
