@@ -272,6 +272,17 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   line-height: 1.45;
 }
 
+/*Ajeita os códigos nas mensagens mandados pelo usuário ou pelo bot*/
+.bubble pre, .bubble code {
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+
 .message-user .bubble {
   display: flex;
   flex-wrap: wrap;
@@ -283,6 +294,10 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
     (deixar ambas as margens iguais para deixar o chat centralizado)*/
   /*margin-left: 100px;*/
   /*margin-right: 100px;*/
+}
+
+.message-bot .bubble pre, .message-bot .bubble code {
+  background: rgba(15, 179, 190, 0.18);
 }
 
 .message-bot .typing-bubble {
