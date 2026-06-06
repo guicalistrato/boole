@@ -11,6 +11,7 @@
   // aguarda o carregamento completo do DOM antes de executar o script
   document.addEventListener('DOMContentLoaded', function () {
     // referencias aos elementos principais do chat no DOM
+    /*           FEITO          */
     const chatContainer = document.getElementById('chat-container');
     const chatHeader = document.getElementById('chat-header');
     const headerContent = chatHeader ? chatHeader.querySelector('.header-content') : null;
@@ -22,35 +23,51 @@
     modeloSelecionado.value = "padrão";
 
     // atualiza quando uma opção é clicada
+    /*           FEITO          */
     document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
       opcao.addEventListener('click', (e) => modeloSelecionado.value = e.currentTarget.getAttribute('value'));
     });
 
     // garante que todos os elementos necessarios existem antes de continuar
+    /*           FEITO          */
     if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton || !modeloSelecionado) {
       return;
     }
 
     // inicialização da interface
+
+    /* esses três foram colocados em index-DOM.js */
+    /*       FEITO      */
     injectDynamicStyles();
+    /*       FEITO      */
     clearExampleMessages();
+    /*       FEITO      */
     autoResizeInput();
+    /*       FEITO      */
     inputField.focus();
 
     // estados de controle da aplicação
+
+    /* essas três variáveis foram colocadas em index-states.js */
+    /*       FEITO      */
     let isSending = false;
     let hasStarted = false;
     let messageCounter = 0;
 
     // acessa a variável id_chat que o Flask renderiza ou le direto da URL
+
+    /* essas duas variáveis foram colocadas em index-backend.js */
+    /*       FEITO      */
     const pathParts = window.location.pathname.split('/');
     const possibleChatId = pathParts[pathParts.length - 1]; 
     
+    /*       FEITO      */
     if (possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
         carregarHistorico(possibleChatId);
     }
 
     // busca o historico no back
+    /*       FEITO      */
     async function carregarHistorico(chatId) {
       try {
         setSendingState(true); // Desativa o input enquanto carrega
@@ -88,11 +105,13 @@
     }
 
     // eventos de envio de mensagem (formulario e tecla enter)
+    /*      FEITO      */
     chatForm.addEventListener('submit', function (event) {
       event.preventDefault();
       handleSubmit();
     });
 
+    /*      FEITO      */
     inputField.addEventListener('keydown', function (event) {
       // Enter envia; Shift+Enter cria nova linha no textarea
       if (event.key === 'Enter' && !event.shiftKey) {
@@ -101,10 +120,12 @@
       }
     });
 
+    /*      FEITO      */
     inputField.addEventListener('input', autoResizeInput);
 
     // função principal responsavel por enviar a mensagem do usuario
     // e processar a resposta do bot
+    /*      FEITO      */
     async function handleSubmit() {
       const userText = sanitizeInput(inputField.value); // sanitiza o texto digitado pelo usuario
 
@@ -141,6 +162,7 @@
     }
 
     // ativa mudanças visuais quando a primeira mensagem é enviada
+    /*       FEITO      */
     function activateConversationUI(titulo = '...') {
       chatContainer.classList.add('chat-started');
 
@@ -156,6 +178,7 @@
       }
     }
 
+  /*        FEITO      */
   function atualizarTituloConversa(titulo) {
     // Procura a pill que foi criada na tela
     const topicPill = chatHeader.querySelector('.topic-pill');
@@ -163,10 +186,11 @@
     // Se ela existir, atualiza o texto
     if (topicPill) {
       topicPill.textContent = titulo;
-  }
+    }
   }
 
     // cria e adiciona uma mensagem (usuario ou bot) no chat
+    /*       FEITO     */
     function appendMessage(author, text) {
       messageCounter += 1;
 
@@ -188,6 +212,7 @@
     }
 
     // exibe animação de "bot digitando"
+    /*      FEITO      */
     function appendTypingMessage() {
       const message = appendMessage('bot', '');
       const bubble = message.querySelector('.bubble');
@@ -211,6 +236,7 @@
     }
 
     // substitui a animação de digitação pelo texto final da resposta
+    /*       FEITO      */
     function replaceTypingWithText(typingMessage, text) {
       if (!typingMessage) {
         appendMessage('bot', text);
@@ -231,6 +257,7 @@
     }
 
     // faz requisição ao backend para obter resposta da IA
+    /*      FEITO      */
     async function requestBotAnswer(question, modelo) {
       // envia pergunta para o servidor usando a URL atual da pagina (/chat ou /chat/id)
       const currentUrl = window.location.pathname;
@@ -280,6 +307,7 @@
     }
 
     // controla estado de envio (loading/desabilitado)
+    /*        FEITO      */
     function setSendingState(state) {
       isSending = state;
       inputField.disabled = state;
@@ -295,6 +323,7 @@
     }
 
     // mantem o scroll sempre no final do chat
+    /*      FEITO      */
     function scrollToBottom() {
       chatMessages.scrollTop = chatMessages.scrollHeight;
       window.requestAnimationFrame(function () {
@@ -303,6 +332,7 @@
     }
 
     // auto-ajusta altura do textarea ate o max-height e ativa scroll interno
+    /*      FEITO      */
     function autoResizeInput() {
       inputField.style.height = 'auto';
 
@@ -314,11 +344,13 @@
     }
 
     // remove espaços extras e normaliza entrada do usuario
+    /*      FEITO      */
     function sanitizeInput(value) {
       return String(value || '').replace(/\s+/g, ' ').trim();
     }
 
     // remove mensagens de exemplo iniciais do chat
+    /*      FEITO      */
     function clearExampleMessages() {
       const sampleMessages = chatMessages.querySelectorAll('.message');
       if (sampleMessages.length > 0) {
@@ -327,6 +359,7 @@
     }
 
     // capitaliza e limita o tamanho do texto
+    /* Não estava sendo usado então eu não coloquei */
     function capAndTrim(text) {
       const safe = String(text || '').trim();
 
@@ -344,6 +377,8 @@
     }
 
     // injeta estilos CSS dinamicamente via JavaScript
+    /*     Movido para um arquivo css separado    */
+    /*      FEITO      */
     function injectDynamicStyles() {
       if (document.getElementById('chat-js-dynamic-style')) {
         return;
