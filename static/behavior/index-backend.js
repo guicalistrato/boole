@@ -1,7 +1,7 @@
 const Backend_index = {}
 
 Backend_index.pathParts = window.location.pathname.split('/');
-Backend_index.possibleChatId = pathParts[pathParts.length - 1];
+Backend_index.possibleChatId = Backend_index.pathParts[Backend_index.pathParts.length - 1];
 
 Backend_index.carregarHistorico = async function (chatId) {
     try {

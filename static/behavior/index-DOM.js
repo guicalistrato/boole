@@ -64,7 +64,7 @@ DOM_index.appendMessage = function (author, text) {
     const message = document.createElement('div');
     message.className = 'message ' + (author === 'user' ? 'message-user' : 'message-bot');
     message.setAttribute('data-author', author);
-    message.setAttribute('data-message-id', String(messageCounter));
+    message.setAttribute('data-message-id', String(States_index.messageCounter));
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
@@ -73,7 +73,7 @@ DOM_index.appendMessage = function (author, text) {
 
     message.appendChild(bubble);
     chatMessages.appendChild(message);
-    scrollToBottom();
+    DOM_index.scrollToBottom();
 
     return message;
 }
@@ -139,7 +139,7 @@ DOM_index.inicializarPágina = function(){
     document.addEventListener('DOMContentLoaded', function () {
         DOM_index.chatContainer = document.getElementById('chat-container');
         DOM_index.chatHeader = document.getElementById('chat-header');
-        DOM_index.headerContent = chatHeader ? chatHeader.querySelector('.header-content') : null;
+        DOM_index.headerContent = DOM_index.chatHeader ? DOM_index.chatHeader.querySelector('.header-content') : null;
         DOM_index.chatMessages = document.getElementById('chat-messages');
         DOM_index.chatForm = document.getElementById('chat-form');
         DOM_index.inputField = document.getElementById('input-field');

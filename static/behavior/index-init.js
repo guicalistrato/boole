@@ -1,6 +1,5 @@
-(function(){
     //toda a função do antigo index.js está aqui
-    //distribuída por três objetos:
+    //distribuída entre três objetos:
     //DOM_index: manipulações do DOM e coisas relacionadas
     //States_index: manipulação de estados
     //Backend_index: comunicação com o backend
@@ -40,4 +39,3 @@
             menu.classList.remove('show');
         }
     });
-})
