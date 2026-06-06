@@ -84,20 +84,28 @@ function criar_botão_fixar(li, id_chat){//recebe o elemento <li> que correspond
 
     fixarbtn.classList = "fixarbtn";
 
-    const img = document.getElementById("pin_image-dark").cloneNode();
-    img.id = "";//remove o id para evitar conflitos de id
-    img.style = ""; //remove o display none
-    fixarbtn.appendChild(img)
-
-    fixarbtn.img = img;
+    if (localStorage.getItem("theme") == "dark"){
+        const img = document.getElementById("pin_image-dark").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        fixarbtn.appendChild(img);
+        fixarbtn.img = img;
+    }
+    else{
+        const img = document.getElementById("pin_image-light").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        fixarbtn.appendChild(img);
+        fixarbtn.img = img;        
+    }
 
     if (localStorage.getItem(id_chat) == "on"){
         listItem.classList.toggle("pinned");
-        fixarbtn.labelName = "desafixar"
+        fixarbtn.labelName = "desafixar";
     }
     else{
         localStorage.setItem(id_chat, "off");
-        fixarbtn.labelName = "fixar"
+        fixarbtn.labelName = "fixar";
     }
 
     fixarbtn.onclick = () => {
@@ -127,13 +135,21 @@ function criar_botão_delete(li, id_chat){//recebe o elemento <li> que correspon
     const listItem = li; //para evitar modificações acidentais
 
     deletebtn.classList = "deletebtn";
-    
-    const img = document.getElementById("delete_image-dark").cloneNode();
-    img.id = "";//remove o id para evitar conflitos de id
-    img.style = ""; //remove o display none
-    deletebtn.appendChild(img)
+    if (localStorage.getItem("theme") == "dark"){
+        const img = document.getElementById("delete_image-dark").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        deletebtn.appendChild(img);
+        deletebtn.img = img;
+    }
+    else{
+        const img = document.getElementById("delete_image-light").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        deletebtn.appendChild(img);
+        deletebtn.img = img;
+    }
 
-    deletebtn.img = img;
 
     deletebtn.onclick = async () => {
     try {
@@ -158,17 +174,32 @@ function criar_botão_dropdown(){
 
     dropdownbtn.classList = "dropdownbtn";
 
-    const img = document.getElementById("dropdown_image-dark").cloneNode();
-    img.id = "";//remove o id para evitar conflitos de id
-    img.style = ""; //remove o display none
-    dropdownbtn.appendChild(img)
-    
-    dropdownbtn.img = img;
+    if (localStorage.getItem("theme") == "dark"){
+        const img = document.getElementById("dropdown_image-dark").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        dropdownbtn.appendChild(img);
+        dropdownbtn.img = img;
+    }
+    else{
+        const img = document.getElementById("dropdown_image-light").cloneNode();
+        img.id = "";//remove o id para evitar conflitos de id
+        img.style = ""; //remove o display none
+        dropdownbtn.appendChild(img);
+        dropdownbtn.img = img;
+    }
 
     const dropdownmenu = document.createElement('div')
     dropdownmenu.classList.add("dropdownmenu");
     dropdownmenu.classList.add("dropdown_hidden");
-    dropdownbtn.appendChild(dropdownmenu)
+    dropdownbtn.appendChild(dropdownmenu);
+
+    if (localStorage.getItem("theme") == "dark"){
+        dropdownmenu.style.backgroundColor = "#022028";
+    }
+    else {
+        dropdownmenu.style.backgroundColor = "white";
+    }
 
     dropdownbtn.dropdownmenu = dropdownmenu;
 
@@ -190,15 +221,27 @@ function adicionar_opção_dropdown(botão_dropdown, novo_botão, legenda_opçã
     const dropdownmenu = dropdownbtn.dropdownmenu;//método que eu defini na criação de dropdownbtn
     const newbtn = novo_botão;
 
-    const legenda = document.createElement('label');
+    const legenda = document.createElement('span');
     legenda.textContent = legenda_opção;
     legenda.style = "padding-top: 4px;";
     legenda.onclick = newbtn.onclick;
 
+    if (localStorage.getItem("theme") == "dark"){
+        legenda.style.color = "white";
+    }
+    else {
+        legenda.style.color = "#022028";
+    }
+
     newbtn.legenda = legenda;
 
-    dropdownmenu.appendChild(newbtn);
-    dropdownmenu.appendChild(legenda);
+    const dropdowndiv = document.createElement("div");
+    dropdowndiv.classList.add("dropdown_container");
+
+    dropdowndiv.appendChild(newbtn);
+    dropdowndiv.appendChild(legenda);
+
+    dropdownmenu.appendChild(dropdowndiv);
 }
 
 // abrir um novo chat
@@ -382,7 +425,6 @@ function toggleIcons(theme) {
             dropdownbtn.dropdownmenu.style.backgroundColor = "#022028"
         }
     }
-
     else if (theme === 'light') {
         if (logo_icon) logo_icon.src = "/static/images/logo-robo-light.png";
         if (theme_icon) theme_icon.src = "/static/images/theme-icon-light.png";
