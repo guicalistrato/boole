@@ -401,30 +401,6 @@
   });
 })();
 
-// função abrir sidebar
-window.openSidebar = function () {
-  const sidebar = document.getElementById('Sidebar');
-  const menu_button = document.getElementById('openbtn');
-
-  if (!sidebar || !menu_button) {
-    return;
-  }
-
-  sidebar.style.width = '350px';
-  menu_button.style.visibility = 'hidden';
-
-  // fecha sidebar ao clicar fora
-  function closeSidebar(e) {
-    if (!sidebar.contains(e.target) && !menu_button.contains(e.target)) {
-      sidebar.style.width = '0';
-      menu_button.style.visibility = 'visible';
-      document.removeEventListener('click', closeSidebar);
-    }
-  }
-
-  document.addEventListener('click', closeSidebar);
-};
-
 // COMPORTAMENTO MENU DROPDOWN DE SELECIONAR MODELO
 const botao = document.getElementById('modelo');
 const menu = document.getElementById('opcoes-modelo');

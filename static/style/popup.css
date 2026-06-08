@@ -30,8 +30,8 @@
     flex-direction: column;
     width: 400px;
     align-items: center;
-    background-color: #164B4D;
-    color: #fff;
+    background-color: light-dark(var(--bg-sidebar-light), var(--bg-sidebar));
+    color: light-dark(var(--text-light), var(--text));
     font-family: Arial, Helvetica, sans-serif;
     padding: 30px;
     border-radius: 35px;
@@ -45,10 +45,10 @@
     font-family: monospace; 
 }
 
- #info-sem-login{
+#info-sem-login{
     font-size: 13px;
     text-align: center;
- }
+}
 
 #subtitulo{
     font-size: 24px;
@@ -77,39 +77,48 @@
     box-sizing: border-box; /* o padding não estoura a largura */
 }
 
-#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma, 
-#nome_edicao, #usuario_edicao, #senha_edicao, #senha_confirma_mudanca{
-    background-color: #022028;
-    color: #fff;
+#nome, #usuario, #senha, #usuario_criacao, #senha_criacao, #senha_confirma{
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
-#nome::placeholder, #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, 
-#senha_confirma::placeholder, #usuario_criacao::placeholder #nome_edicao::placeholder, 
-#usuario_edicao::placeholder, #senha_edicao::placeholder, #senha_confirma_mudanca::placeholder{
-  color:#164B4D;
+#nome::placeholder, #usuario::placeholder, #senha::placeholder, #senha_criacao::placeholder, #senha_confirma::placeholder, #usuario_criacao::placeholder{
+  color:light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
 }
 
 #botao-login, #botao-criar-conta, #botao-cancelar, #botao-confirma-mudancas, #botao-redirect-login{
     font-weight: bold;
-    transition: color, background-color 0.3s;
+    transition: 0.3s;
+}
+
+#botao-login, #botao-criar-conta, #botao-confirma-mudancas, #botao-redirect-login{
+    background-color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
+    color: light-dark(var(--text-light), var(--text));
 }
 
 #botao-login:hover, #botao-criar-conta:hover,
 #botao-confirma-mudancas:hover, #botao-redirect-login:hover {
-    background-color: #d1d1d1;
+    background-color: light-dark(var(--accent-sidebar), var(--accent-sidebar-light));
+    color: light-dark(var(--accent-sidebar-light), var(--accent-sidebar));
 }
 
- #botao-cancelar:hover{
+
+#botao-cancelar:hover{
     background-color: red;
     color: #fff;
- }
+}
+
+#botao-confirma-mudancas:hover{
+    background-color: #0fb3be;
+    color:#fff
+}
 
 #direc-criar-conta, #cont-sem-login, #botao-voltar{
     font-family: monospace;
     background-color: transparent;
     border: none;
     text-decoration: underline;
-    color: #fff; 
+    color: light-dark(var(--muted-light), var(--muted));
     cursor: pointer;
     font-size: 14px;
     transition: color 0.2s;
@@ -123,5 +132,5 @@
 }
 
 #direc-criar-conta:hover, #cont-sem-login:hover, #botao-voltar:hover {
-    color: #7c7c7c;
+    color: light-dark(var(--accent-sidebar), var(--accent));
 }   

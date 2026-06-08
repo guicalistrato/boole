@@ -1,4 +1,6 @@
 :root {
+  /*A propriedade color-scheme muda a paleta de cores do site para modo claro ou modo escuro*/
+  color-scheme: dark;
   --bg: #022028;
   --bg-2: #0d3a43;
   --accent: #0fb3be;
@@ -6,6 +8,14 @@
   --muted: #d8ecec;
   --input-bg: rgba(20, 96, 104, 0.78);
   --input-border: rgba(15, 179, 190, 0.18);
+
+  --bg-light: white;
+  --bg-2-light: #b8e5e2;
+  --accent-light: #104E50;
+  --text-light: #2c3636;
+  --muted-light: #104E50;
+  --input-bg-light: rgba(194, 235, 232, 0.78);
+  --input-border-light: rgba(16, 78, 80, 0.18);
 }
 
 /*As funções abaixo são para definir os padrões de estilo do site*/
@@ -24,8 +34,8 @@ body {
 
 body {
   font-family: monospace;
-  background: var(--bg);
-  color: var(--text);
+  background: light-dark(var(--bg-light), var(--bg));
+  color: light-dark(var(--text-light), var(--text));
 
 }
 
@@ -45,7 +55,7 @@ chat-header: o cabeçalho do chat (a saudação que o boole faz em um novo chat)
 .chat-container {
   width: 100vw;
   height: 100vh;
-  background: var(--bg);
+  background: light-dark(var(--bg-light), var(--bg));
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -59,8 +69,8 @@ chat-header: o cabeçalho do chat (a saudação que o boole faz em um novo chat)
   padding: 0 24px;
   display: flex;
   align-items: flex-start;
-  background-color: var(--bg);
-  box-shadow: var(--bg) 0px 5px 10px;
+  background-color: light-dark(var(--bg-light), var(--bg));
+  box-shadow: light-dark(var(--bg-light), var(--bg)) 0px 5px 10px;
 }
 
 /*Configurações do botão de abrir sidebar, o hover deixa ele mais visível*/
@@ -100,7 +110,7 @@ chat-title e chat-subtitle estão contidos dentro do header-content, que está c
   font-weight: 700;
   font-family: monospace;
   letter-spacing: 0.5px;
-  color: var(--text);
+  color: light-dark(var(--text-light), var(--text));
 }
 
 .chat-subtitle {
@@ -110,7 +120,7 @@ chat-title e chat-subtitle estão contidos dentro do header-content, que está c
   font-family: monospace;
   line-height: 1.25;
   font-weight: 700;
-  color: var(--muted);
+  color: light-dark(var(--muted-light), var(--muted));
   white-space: normal;
 }
 
@@ -129,7 +139,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
-  scrollbar-color: rgba(15, 179, 190, 0.35) transparent;
+  scrollbar-color: light-dark(rgba(15, 179, 190, 0.35), rgba(16, 78, 80, 0.35)) transparent;
 }
 
 /* container principal do botão de selecionar modelo */
@@ -140,7 +150,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 
 .dropdown-btn {
   background-color: transparent;
-  color: #fff;
+  color: light-dark(var(--text-light), var(--text));
   padding: 10px 10px;
   border: none;
   cursor: pointer;
@@ -160,7 +170,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
   display: none;
   position: absolute;
   bottom: 100%;
-  background-color: var(--bg-2);
+  background-color: light-dark(var(--bg-2-light), var(--bg-2));
   min-width: 280px; 
   max-width: 350px; 
   box-shadow: 0px 8px 16px rgba(0,0,0,0.15);
@@ -190,7 +200,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 .dropdown-content strong {
   display: block;
   font-size: 14px;
-  color: #fff;
+  color: light-dark(var(--text-light), var(--text));
   margin-bottom: 4px;
 }
 
@@ -198,7 +208,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 .dropdown-content p {
   margin: 0;
   font-size: 12px;
-  color: #666;
+  color: light-dark(var(--muted-light), var(--muted));
   line-height: 1.4; 
 }
 
@@ -208,7 +218,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 
 /* mostra as opções ao passar o mouse pelo container */
 .dropdown:hover {
-  background-color: var(--bg-2);
+  background-color: light-dark(var(--bg-2-light), var(--bg-2));
   border-radius: 8px;
 }
 
@@ -234,7 +244,7 @@ MANTER DISPLAY FLEX, FLEX DIRECTION COLUMN E OVERFLOW-Y AUTO*/
 }
 
 .chat-main::-webkit-scrollbar-thumb {
-  background: rgba(15, 179, 190, 0.35);
+  background: light-dark(rgba(15, 179, 190, 0.35), rgba(16, 78, 80, 0.35));
   border-radius: 10px;
 }
 
@@ -287,7 +297,7 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
 .message-user .bubble {
   display: flex;
   flex-wrap: wrap;
-  padding: 2px 16px;
+  padding: 2px 16px 2px 16px;
   border-radius: 14px;
   background: #03151A;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
@@ -301,17 +311,8 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   background: rgba(15, 179, 190, 0.18);
 }
 
-.message-bot .typing-bubble {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 26px;
-  padding: 2px 16px;
-  border-radius: 14px;
-  background: rgba(11, 56, 64, 0.92);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
-  /*margin-left: 100px;*/
-  /*margin-right: 100px;*/
+.message-user .bubble {
+  background: light-dark(#D6E7EA, #03151A);
 }
 
 .chat-input {
@@ -319,8 +320,8 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   padding: 0 24px 30px;
   display: flex;
   justify-content: center;
-  background-color: var(--bg);
-  box-shadow: var(--bg) 0px -15px 10px;
+  background-color: light-dark(var(--bg-light), var(--bg));
+  box-shadow: light-dark(var(--bg-light), var(--bg)) 0px -15px 10px;
 }
 
 /*chat-form controla o tamanho da caixa de input
@@ -339,8 +340,8 @@ input-field é a própria caixa de input */
   gap: 10px;
   padding: 2px 10px 2px 14px;
   border-radius: 7px;
-  background: var(--input-bg);
-  border: 1px solid var(--input-border);
+  background: light-dark(var(--input-bg-light), var(--input-bg));
+  border: 1px solid light-dark(var(--input-border-light), var(--input-border));
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
 }
 
@@ -353,7 +354,7 @@ input-field é a própria caixa de input */
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--text);
+  color: light-dark(var(--text-light), var(--text));
   font-size: 0.86rem;
   line-height: 1.35;
   font-family: Arial, Helvetica, sans-serif;
@@ -386,7 +387,7 @@ input-field é a própria caixa de input */
   height: 42px;
   border: 0;
   background: transparent;
-  color: var(--accent);
+  color: light-dark(var(--accent-light), var(--accent));
   cursor: pointer;
   display: grid;
   align-self: flex-start;
@@ -400,7 +401,7 @@ input-field é a própria caixa de input */
   font-size: 24px;
   line-height: 1;
   transform: rotate(14deg);
-  color: var(--accent);
+  color: light-dark(var(--accent-light), var(--accent));
 }
 
 .send-button:hover {
