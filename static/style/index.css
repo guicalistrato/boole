@@ -276,14 +276,39 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   /*Para aumentar ou diminuir a largura das mensagens, mexer na propriedade max-width
   (no momento ela pega o menor valor entre 560px e 85%px da tela)*/
   max-width: min(560px, 85%);
+  min-width: 0;
+  display: block;
+  color: var(--text);
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+/*Ajeita os códigos nas mensagens mandados pelo usuário ou pelo bot*/
+.bubble pre, .bubble code {
+  max-width: 100%;
+  overflow-x: auto;
+  display: inline-block;
+  word-break: normal;
+  white-space: pre-wrap;
+  padding: 2px 4px;
+  border-radius: 5px;
+}
+
+.message-user .bubble {
   display: flex;
   flex-wrap: wrap;
   padding: 2px 16px 2px 16px;
   border-radius: 14px;
-  background: light-dark(var(--bg-2-light), var(--bg-2));
-  color: light-dark(var(--text-light), var(--text));
-  font-size: 0.98rem;
-  line-height: 1.45;
+  background: #03151A;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  /*Caso queira afastar ou aproximar mais as mensagens, mexer nas margens abaixo
+    (deixar ambas as margens iguais para deixar o chat centralizado)*/
+  /*margin-left: 100px;*/
+  /*margin-right: 100px;*/
+}
+
+.message-bot .bubble code {
+  background: rgba(15, 179, 190, 0.18);
 }
 
 .message-user .bubble {
@@ -320,7 +345,7 @@ input-field é a própria caixa de input */
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06) inset;
 }
 
-.input-field {
+.input-field, .code-input-field {
   flex: 1;
   width: 100%;
   min-width: 0;
@@ -339,18 +364,18 @@ input-field é a própria caixa de input */
   margin: 0;
 }
 
-.input-field::placeholder {
-  color: light-dark(rgba(16, 78, 80, 0.95), rgba(15, 179, 190, 0.95));
+.input-field::placeholder, .code-input-field::placeholder {
+  color: rgba(15, 179, 190, 0.95);
   opacity: 1;
 }
 
 /*Scrollbar da caixa de input quando ela cresce até o máximo*/
-.input-field::-webkit-scrollbar {
+.input-field::-webkit-scrollbar, .code-input-field::-webkit-scrollbar {
   width: 6px;
 }
 
-.input-field::-webkit-scrollbar-thumb {
-  background: light-dark(rgba(15, 179, 190, 0.35), rgba(16, 78, 80, 0.35));
+.input-field::-webkit-scrollbar-thumb, .code-input-field::-webkit-scrollbar-thumb {
+  background: rgba(15, 179, 190, 0.35);
   border-radius: 8px;
 }
 
@@ -418,4 +443,69 @@ input-field é a própria caixa de input */
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.chat-container.chat-started .chat-header {
+  min-height: 72px;
+}
+
+.chat-container.chat-started .chat-main {
+  padding-top: 8px;
+}
+
+.topic-pill {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: min(70vw, 380px);
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: rgba(15, 179, 190, 0.18);
+  border: 1px solid rgba(15, 179, 190, 0.26);
+  color: #71dbe3;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typing-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+}
+
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(230, 248, 248, 0.95);
+  animation: chatTyping 1s infinite ease-in-out;
+}
+
+.send-button.is-loading {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@keyframes chatTyping {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+
+  40% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 700px) {
+  .topic-pill {
+    max-width: 82vw;
+    font-size: 0.72rem;
+  }
 }
