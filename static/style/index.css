@@ -278,7 +278,7 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   max-width: min(560px, 85%);
   min-width: 0;
   display: block;
-  color: var(--text);
+  color: light-dark(var(--text-light), var(--text));
   font-size: 0.98rem;
   line-height: 1.45;
 }
@@ -299,7 +299,7 @@ MANTER JUSTIFY-CONTENT BOT-FLEX-START E USER-FLEX-END*/
   flex-wrap: wrap;
   padding: 2px 16px 2px 16px;
   border-radius: 14px;
-  background: #03151A;
+  background: light-dark(#03151A, #03151A);
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
   /*Caso queira afastar ou aproximar mais as mensagens, mexer nas margens abaixo
     (deixar ambas as margens iguais para deixar o chat centralizado)*/
