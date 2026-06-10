@@ -109,7 +109,7 @@ Backend_index.handleSubmit = async function() {
     States_index.setSendingState(true);
 
     try {
-        const botAnswer = await Backend_index.requestBotAnswer(userText, modeloSelecionado.value);
+        const botAnswer = await Backend_index.requestBotAnswer(userText, DOM_index.modeloSelecionado.value);
         DOM_index.replaceTypingWithText(
             typingMessage,
             botAnswer || 'Nao consegui gerar uma resposta agora. Tente novamente.'
