@@ -1,12 +1,5 @@
 const DOM_index = {}
 
-DOM_index.eventListenerModelos = function(){
-    const modeloSelecionado = DOM_index.modeloSelecionado;
-    document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
-      opcao.addEventListener('click', (e) => modeloSelecionado.value = e.currentTarget.getAttribute('value'));
-    });
-}
-
 DOM_index.clearExampleMessages = function(){
   const chatMessages = DOM_index.chatMessages;
 
@@ -58,6 +51,7 @@ DOM_index.activateConversationUI = function (titulo = '...') {
 
 DOM_index.appendMessage = function (author, text) {
     const chatMessages = DOM_index.chatMessages;
+    const chatContainer = DOM_index.chatContainer;
 
     States_index.messageCounter += 1;
 
@@ -68,7 +62,16 @@ DOM_index.appendMessage = function (author, text) {
 
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
-    bubble.innerHTML = marked.parse(text);
+
+    const isDebugMode = chatContainer?.getAttribute('data-debug-mode') === 'true';
+
+    // Se for mensagem do usuário no modo debug, trata como texto puro para não quebrar o layout
+    if (author === 'user' && isDebugMode) {
+        bubble.textContent = text;
+    } else {
+        bubble.innerHTML = marked.parse(text);
+    }
+
     bubble.style.whiteSpace = 'pre-wrap';
 
     message.appendChild(bubble);
@@ -91,7 +94,7 @@ DOM_index.atualizarTituloConversa = function(titulo) {
 }
 
 DOM_index.sanitizeInput = function(value) {
-    return String(value || '').replace(/\s+/g, ' ').trim();
+    return String(value || '').trim();
 }
 
 DOM_index.appendTypingMessage = function() {
@@ -147,14 +150,31 @@ DOM_index.inicializarPágina = function(){
         DOM_index.modeloSelecionado = document.getElementById('modelo');
         DOM_index.modeloSelecionado.value = "padrão";
         
+        if (DOM_index.modeloSelecionado) {
+            DOM_index.modeloSelecionado.value = "padrão";
+
+            document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
+                opcao.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    const selectedValue = e.currentTarget.getAttribute('value');
+                    const selectedText = e.currentTarget.querySelector('strong')?.textContent || '';
+
+                    if (selectedText.toLowerCase() === 'debug' || selectedValue === '') {
+                        window.location.href = '/debug';
+                        return;
+                    }
+
+                    DOM_index.modeloSelecionado.value = selectedValue;
+                });
+            });
+        }
+        
         if (!DOM_index.chatContainer || !DOM_index.chatHeader || !DOM_index.chatMessages
-            || !DOM_index.chatForm || !DOM_index.inputField || !DOM_index.sendButton
-            || !DOM_index.modeloSelecionado) {
-            
+            || !DOM_index.chatForm || !DOM_index.inputField || !DOM_index.sendButton) {
             return;
         }
 
-        DOM_index.eventListenerModelos();
         DOM_index.clearExampleMessages();
         DOM_index.autoResizeInput();
         DOM_index.inputField.focus();
