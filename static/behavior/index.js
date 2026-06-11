@@ -20,26 +20,33 @@
     const inputField = document.getElementById('input-field');
     const sendButton = document.getElementById('send-button');
     const modeloSelecionado = document.getElementById('modelo');
-    modeloSelecionado.value = "padrão";
 
-    // atualiza quando uma opção é clicada
-    /*           FEITO          */
-    document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
-      opcao.addEventListener('click', (e) => modeloSelecionado.value = e.currentTarget.getAttribute('value'));
-    });
+    if (modeloSelecionado) {
+      modeloSelecionado.value = "padrão";
+
+      document.querySelectorAll('#opcoes-modelo a').forEach(opcao => {
+        opcao.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          const selectedValue = e.currentTarget.getAttribute('value');
+          const selectedText = e.currentTarget.querySelector('strong')?.textContent || '';
+
+          if (selectedText.toLowerCase() === 'debug' || selectedValue === '') {
+            window.location.href = '/debug';
+            return;
+          }
+
+          modeloSelecionado.value = selectedValue;
+        });
+      });
+    }
 
     // garante que todos os elementos necessarios existem antes de continuar
-    /*           FEITO          */
-    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton || !modeloSelecionado) {
+    if (!chatContainer || !chatHeader || !chatMessages || !chatForm || !inputField || !sendButton) {
       return;
     }
 
     // inicialização da interface
-
-    /* esses três foram colocados em index-DOM.js */
-    /*       FEITO      */
-    injectDynamicStyles();
-    /*       FEITO      */
     clearExampleMessages();
     /*       FEITO      */
     autoResizeInput();
@@ -59,46 +66,44 @@
     /* essas duas variáveis foram colocadas em index-backend.js */
     /*       FEITO      */
     const pathParts = window.location.pathname.split('/');
-    const possibleChatId = pathParts[pathParts.length - 1]; 
-    
-    /*       FEITO      */
-    if (possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
-        carregarHistorico(possibleChatId);
+    const possibleChatId = pathParts[pathParts.length - 1];
+    const isDebugRoute = window.location.pathname === '/debug';
+
+    if (!isDebugRoute && possibleChatId && possibleChatId !== 'chat' && possibleChatId !== '') {
+      carregarHistorico(possibleChatId);
     }
 
     // busca o historico no back
     /*       FEITO      */
     async function carregarHistorico(chatId) {
+      let data = null;
       try {
         setSendingState(true); // Desativa o input enquanto carrega
 
         const response = await fetch('/api/chat/' + chatId);
-        
+
         if (!response.ok) {
-            throw new Error('Histórico não encontrado');
+          throw new Error('Histórico não encontrado');
         }
-        
-        const data = await response.json();
-        
+
+        data = await response.json();
+
         if (data.mensagens && data.mensagens.length > 0) {
           hasStarted = true;
           activateConversationUI(data.nome_chat);
-          
+
           data.mensagens.forEach(msg => {
             appendMessage('user', msg.pergunta);
             appendMessage('bot', msg.resposta);
           });
-          
+
           // O messageCounter precisa saber quantas mensagens já existem
           // para enviar o número certo para a API do Gemini depois
-          messageCounter = data.mensagens.length * 2; 
+          messageCounter = data.mensagens.length * 2;
         }
       } catch (error) {
-        if (!data.debug) {
-          console.error(error);
-          alert("Não foi possível carregar a conversa.");
-        }
-        
+        console.error(error);
+        alert("Não foi possível carregar a conversa.");
       } finally {
         setSendingState(false);
       }
@@ -127,9 +132,9 @@
     // e processar a resposta do bot
     /*      FEITO      */
     async function handleSubmit() {
-      const userText = sanitizeInput(inputField.value); // sanitiza o texto digitado pelo usuario
+      const userText = inputField.value; // Pega o valor bruto, sem sanitizar ainda
 
-      if (!userText || isSending) {
+      if (!userText.trim() || isSending) {
         return;
       }
 
@@ -146,15 +151,16 @@
       setSendingState(true);
 
       try {
-        const botAnswer = await requestBotAnswer(userText, modeloSelecionado.value);
+        const botAnswer = await requestBotAnswer(userText, modeloSelecionado ? modeloSelecionado.value : "padrão");
         replaceTypingWithText(
           typingMessage,
           botAnswer || 'Nao consegui gerar uma resposta agora. Tente novamente.'
         );
       } catch (error) {
+        console.error('Erro no handleSubmit:', error);
         replaceTypingWithText(
           typingMessage,
-          'Tive um erro ao buscar a resposta. Tente de novo em instantes.'
+          `Desculpe, ocorreu um erro ao processar sua dúvida. Detalhe: ${error.message}`
         );
       } finally {
         setSendingState(false);
@@ -178,16 +184,16 @@
       }
     }
 
-  /*        FEITO      */
-  function atualizarTituloConversa(titulo) {
-    // Procura a pill que foi criada na tela
-    const topicPill = chatHeader.querySelector('.topic-pill');
-    
-    // Se ela existir, atualiza o texto
-    if (topicPill) {
-      topicPill.textContent = titulo;
+    // atualiza o titulo do chat
+    function atualizarTituloConversa(titulo) {
+      // Procura a pill que foi criada na tela
+      const topicPill = chatHeader.querySelector('.topic-pill');
+
+      // Se ela existir, atualiza o texto
+      if (topicPill) {
+        topicPill.textContent = titulo;
+      }
     }
-  }
 
     // cria e adiciona uma mensagem (usuario ou bot) no chat
     /*       FEITO     */
@@ -201,7 +207,16 @@
 
       const bubble = document.createElement('div');
       bubble.className = 'bubble';
-      bubble.innerHTML = marked.parse(text);
+
+      const isDebugMode = chatContainer?.getAttribute('data-debug-mode') === 'true';
+
+      // Se for mensagem do usuário no modo debug, trata como texto puro para não quebrar o layout
+      if (author === 'user' && isDebugMode) {
+        bubble.textContent = text;
+      } else {
+        bubble.innerHTML = marked.parse(text);
+      }
+
       bubble.style.whiteSpace = 'pre-wrap';
 
       message.appendChild(bubble);
@@ -257,52 +272,84 @@
     }
 
     // faz requisição ao backend para obter resposta da IA
-    /*      FEITO      */
+    // fluxo debug: primeiro salva o codigo em /debug, depois envia a duvida ao chat
     async function requestBotAnswer(question, modelo) {
-      // envia pergunta para o servidor usando a URL atual da pagina (/chat ou /chat/id)
       const currentUrl = window.location.pathname;
-      const response = await fetch(currentUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=utf-8' },
-        body: JSON.stringify({ duvida: question, num: messageCounter, modelo: modelo })
-      });
+      const isDebugMode = chatContainer?.getAttribute('data-debug-mode') === 'true';
 
-      let data = null;
-      try {
-        data = await response.json();
-      } catch (_ignored) {
-        data = null;
+      let finalChatUrl = currentUrl;
+      if (currentUrl === '/debug') {
+        finalChatUrl = '/chat'; // Se for a pagina inicial de debug, a primeira pergunta vai para /chat
       }
 
+      // Se estamos em /debug com codigo, primeiro salvamos o codigo no backend
+      if (isDebugMode && window.DebugAPI && window.DebugAPI.isEnabled()) {
+        try {
+          const debugData = window.DebugAPI.getDebugData();
+
+          // POST para /debug para salvar codigo e marcar session["debug"] = True
+          const debugResponse = await fetch('/debug', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' },
+            body: JSON.stringify({ codigo: debugData.codigo })
+          });
+
+          const debugResult = await debugResponse.json();
+
+          if (!debugResponse.ok) {
+            const errorMessage = debugResult && debugResult.erro ? debugResult.erro : 'Erro ao salvar código de debug';
+            throw new Error(errorMessage);
+          }
+
+          if (debugResult && debugResult.redirect) {
+            finalChatUrl = debugResult.redirect;
+            window.history.pushState({}, '', finalChatUrl);
+            window.DebugAPI.clearDebugCode();
+          }
+        } catch (error) {
+          // se getDebugData falhar (ex: codigo vazio), o erro é lançado aqui
+          throw new Error(`Erro no modo debug: ${error.message}`);
+        }
+      }
+
+      const body = {
+        duvida: question,
+        num: messageCounter,
+        modelo: modelo
+      };
+
+      const response = await fetch(finalChatUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(body)
+      });
+
       if (!response.ok) {
-        const errorMessage = data && data.erro ? data.erro : 'Falha na requisicao';
+        const errData = await response.json().catch(() => ({}));
+        const errorMessage = errData.erro || `Falha na requisição (status: ${response.status})`;
         throw new Error(errorMessage);
       }
 
+      const data = await response.json();
+
       if (!data || !data.resultado) {
-        throw new Error('Resposta vazia');
+        throw new Error('Resposta do servidor está vazia ou mal formatada.');
       }
-      
-      // se for um chat recém-criado, atualiza a URL do navegador com o novo ID
+
       if (data.novo_chat && data.id_chat) {
         window.history.pushState({}, '', '/chat/' + data.id_chat);
       }
-      
-      // atualiza o titulo do chat
+
       const titulo = String(data.titulo).trim();
 
-      // atualizar titulo caso seja primeira mensagem
       if (messageCounter < 3) {
         atualizarTituloConversa(titulo);
       }
 
-      // chama a função da sidebar
       if (typeof window.carregarSidebarChats === 'function') {
-          window.carregarSidebarChats();
-      } else {
-          console.warn("A função da sidebar ainda não foi carregada no window.");
+        window.carregarSidebarChats();
       }
-      
+
       return String(data.resultado).trim();
     }
 
@@ -346,7 +393,7 @@
     // remove espaços extras e normaliza entrada do usuario
     /*      FEITO      */
     function sanitizeInput(value) {
-      return String(value || '').replace(/\s+/g, ' ').trim();
+      return String(value || '').trim();
     }
 
     // remove mensagens de exemplo iniciais do chat
@@ -375,57 +422,6 @@
 
       return normalized.slice(0, 39).trim() + '...';
     }
-
-    // injeta estilos CSS dinamicamente via JavaScript
-    /*     Movido para um arquivo css separado    */
-    /*      FEITO      */
-    function injectDynamicStyles() {
-      if (document.getElementById('chat-js-dynamic-style')) {
-        return;
-      }
-
-      const style = document.createElement('style');
-      style.id = 'chat-js-dynamic-style';
-      style.textContent = [
-        '.chat-container.chat-started .chat-header { min-height: 72px; }',
-        '.chat-container.chat-started .chat-main { padding-top: 8px; }',
-        '.topic-pill {',
-        '  position: absolute;',
-        '  top: 24px;',
-        '  left: 50%;',
-        '  transform: translateX(-50%);',
-        '  max-width: min(70vw, 380px);',
-        '  padding: 8px 14px;',
-        '  border-radius: 8px;',
-        '  background: rgba(15, 179, 190, 0.18);',
-        '  border: 1px solid rgba(15, 179, 190, 0.26);',
-        '  color: #71dbe3;',
-        '  font-size: 1rem;',
-        '  font-weight: 700;',
-        '  white-space: nowrap;',
-        '  overflow: hidden;',
-        '  text-overflow: ellipsis;',
-        '}',
-        '.typing-bubble { display: inline-flex; align-items: center; gap: 6px; min-height: 26px; }',
-        '.typing-dot {',
-        '  width: 7px;',
-        '  height: 7px;',
-        '  border-radius: 50%;',
-        '  background: rgba(230, 248, 248, 0.95);',
-        '  animation: chatTyping 1s infinite ease-in-out;',
-        '}',
-        '.send-button.is-loading { opacity: 0.55; pointer-events: none; }',
-        '@keyframes chatTyping {',
-        '  0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }',
-        '  40% { transform: translateY(-3px); opacity: 1; }',
-        '}',
-        '@media (max-width: 700px) {',
-        '  .topic-pill { max-width: 82vw; font-size: 0.72rem; }',
-        '}'
-      ].join('');
-
-      document.head.appendChild(style);
-    }
   });
 })();
 
@@ -433,34 +429,29 @@
 const botao = document.getElementById('modelo');
 const menu = document.getElementById('opcoes-modelo');
 
-// abre/fecha o menu ao clicar no botão
-botao.addEventListener('click', function(event) {
-  event.stopPropagation();
-  menu.classList.toggle('show');
-});
-
-// captura o clique em um item do menu para atualizar o botão
-const itens = menu.querySelectorAll('li a');
-
-itens.forEach(function(item) {
-  item.addEventListener('click', function(event) {
-    event.preventDefault(); // impede a página de recarregar/pular
-    event.stopPropagation(); // impede o clique de fechar o menu antes da hora
-    
-    // busca o texto dentro da tag <strong> do item clicado
-    const tituloSelecionado = item.querySelector('strong').textContent;
-    
-    // atualiza o texto do botão principal
-    botao.textContent = tituloSelecionado;
-    
-    // fecha o menu após a seleção
-    menu.classList.remove('show');
+if (botao && menu) {
+  botao.addEventListener('click', function (event) {
+    event.stopPropagation();
+    menu.classList.toggle('show');
   });
-});
 
-// fecha o menu se o usuário clicar em qualquer outro lugar da tela
-document.addEventListener('click', function() {
-  if (menu.classList.contains('show')) {
-    menu.classList.remove('show');
-  }
-});
+  const itens = menu.querySelectorAll('li a');
+
+  itens.forEach(function (item) {
+    item.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const tituloSelecionado = item.querySelector('strong').textContent;
+      botao.textContent = tituloSelecionado;
+      menu.classList.remove('show');
+    });
+  });
+
+  document.addEventListener('click', function () {
+    if (menu.classList.contains('show')) {
+      menu.classList.remove('show');
+    }
+  });
+}
+
