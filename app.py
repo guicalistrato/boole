@@ -44,7 +44,7 @@ def chat_get(id_chat=None):
     if nome == None:
         nome = ""
     else:
-        nome = f", {nome[0]}"
+        nome = f"{nome[0]}"
 
     # checa se há um codigo na id atual para alterar para modo debug
     if receber_codigo(id_chat) == None:
@@ -53,7 +53,7 @@ def chat_get(id_chat=None):
     else:
         session["debug"] = True
 
-    return render_template("index.html", id_chat=id_chat, nome=nome)
+    return render_template("index.html", id_chat=id_chat, nome=nome, usuario=usuario)
 
 @app.post("/chat")
 @app.post("/chat/<id_chat>")
