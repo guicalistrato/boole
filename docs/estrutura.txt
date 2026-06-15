@@ -3,12 +3,16 @@ Algumas informações sobre o programa
 TABELAS SQL
 
 usuarios:
-usuario - text
-senha - text
+usuario - text (PRIMARY KEY)
+senha   - text (NOT NULL)
 
-historico:
-id - int
-usuario - text
-pergunta - text
-resposta - text
-=====================
+duvidas:
+id           - integer (PRIMARY KEY AUTOINCREMENT)
+usuario      - text (NOT NULL, FK → usuarios.usuario)
+pergunta     - text (NOT NULL)
+resposta     - text (NOT NULL)
+data_criacao - timestamp (DEFAULT CURRENT_TIMESTAMP)
+
+ÍNDICES:
+idx_duvidas_usuario ON duvidas(usuario)
+========================

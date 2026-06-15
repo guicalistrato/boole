@@ -89,19 +89,12 @@ Isso cria as tabelas `usuarios` e `duvidas` em `dados.db`.
 ### Passo 6: Rodar a Aplicação
 
 ```bash
-flask run
+python app.py
 ```
 
 Acesse `http://localhost:5000` no navegador.
 
 ---
-
-Se quiser ver as alterações no código rodando em tempo real, execute:
-
-```bash
-flask --app app.py run --debug
-```
-
 
 ## Estrutura do Projeto
 
@@ -112,32 +105,31 @@ boole/
 ├── db_init.py             # Script de inicialização do banco de dados
 ├── funcoes.py             # Funções auxiliares (decorador @login_required)
 ├── requirements.txt       # Dependências do projeto
-├── test_app.py            # Testes automatizados
 ├── dados.db               # Banco de dados SQLite (gerado automaticamente)
 ├── .env.local             # Variáveis de ambiente (não commit)
 ├── .gitignore             # Arquivos ignorados pelo git
 ├── README.md              # Documentação principal do projeto
 ├── CONTRIBUTING.md        # Este arquivo
 │
-├── static/                 # Recursos estáticos (Jinja2)
+├── static/
+│   ├── images/            # Ícones e imagens
 │   │
-│   ├── images/             # Imagens usadas no site
+│   ├── style/             # Arquivos em CSS (estilização)
+│   │   ├── criar_conta.css
+│   │   ├── index.css
+│   │   ├── login.css
+│   │   └── sidebar.css
 │   │
-│   ├── style/              # Arquivos em CSS (estilização)    
-│   │   ├── index.css       # Estilo da página principal 
-│   │   ├── login.css       # Estilo do componente de login/signup
-│   │   └── sidebar.css     # Estilo do componente menu lateral
-│   │
-│   └── behavior/           # Arquivos em JavaScript (comportamento)
-│       ├── signup.js       # Comportamento (funções) do componente de criar conta  
-│       ├── index.js        # Comportamento (funções) da página principal 
-│       ├── login.js        # Comportamento (funções) do componente de login
-│       ├── logout.js       # Comportamento (funções) do botão de logout
-│       └── sidebar.js      # Comportamento (funções) do componente menu lateral
+│   └── behavior/          # Arquivos em JavaScript (comportamento)
+│       ├── criar_conta.js
+│       ├── index.js
+│       ├── login.js
+│       └── sidebar.js
 │
 ├── templates/             # Templates HTML (Jinja2)
 │   ├── index.html         # Página principal (chat com Boole)
-│   ├── login.html         # Componente pop-up de login/signup
+│   ├── login.html         # Página de login
+│   ├── criar_conta.html   # Página de criar conta
 │   └── sidebar.html       # Componente menu lateral
 │
 ├── docs/                  # Documentação adicional
@@ -152,22 +144,23 @@ boole/
 
 #### `app.py`
 Contém todas as rotas da aplicação:
-- `GET /` - Página inicial (chat com Boole)
-- `POST /` - Enviar dúvida e salvar resposta
-- `GET /historico` - Obter todas as dúvidas do usuário
-- `GET /historico/<id>` - Obter dúvida específica
-- `GET /login` - Página de login
-- `POST /login` - Autenticar usuário
-- `GET /criar-conta` - Página de criar conta
-- `POST /criar-conta` - Registrar novo usuário
+- `GET /` — Página inicial (chat com Boole)
+- `POST /` — Enviar dúvida e receber resposta do tutor IA
+- `GET /historico` — Obter todas as dúvidas do usuário
+- `GET /historico/<id>` — Obter dúvida específica
+- `POST /continuar-sem-login` — Iniciar sessão anônima
+- `GET /login` — Página de login
+- `POST /login` — Autenticar usuário
+- `GET /criar-conta` — Página de criar conta
+- `POST /criar-conta` — Registrar novo usuário
 
 #### `boole.py`
 Gerencia integração com Google Gemini API:
-- `run_boole(pergunta)` - Processa pergunta e retorna resposta do tutor
+- `run_boole(pergunta)` — Processa pergunta com system prompt pedagógico e retorna resposta do tutor
 
 #### `funcoes.py`
 Funções auxiliares:
-- `@login_required` - Decorador que protege rotas
+- `@login_required` — Decorador que protege rotas que exigem autenticação (redireciona para `/login` se não há sessão ativa)
 
 ---
 
@@ -192,23 +185,23 @@ Use convenção clara:
 
 ```bash
 # Features novas
-feature/descrição-da-feature/nome-autor
+feature/descrição-da-feature
 
 # Correções de bugs
-fix/descrição-do-bug/nome-autor
+fix/descrição-do-bug
 
 # Melhorias de código
-refactor/descrição/nome-autor
+refactor/descrição
 
 # Documentação
-docs/descrição/nome-autor
+docs/descrição
 ```
 
 **Exemplos:**
 ```bash
-git checkout -b feature/menu-lateral/luiz
-git checkout -b fix/validacao-form-login/gui
-git checkout -b refactor/otimizar-queries-db/leon
+git checkout -b feature/adicionar-menu-lateral
+git checkout -b fix/validacao-form-login
+git checkout -b refactor/otimizar-queries-db
 ```
 
 ### Fluxo Padrão
@@ -227,7 +220,6 @@ git commit -m "Mensagem clara e descritiva"
 git push origin feature/sua-feature
 
 # 4. Abrir Pull Request no GitHub
-# (ou no GitLab/Gitea conforme sua plataforma)
 
 # 5. Após merge, deletar branch local
 git checkout main
@@ -267,10 +259,10 @@ git commit -m "WIP"
 def obter_historico(usuario):
     """
     Obtém todas as dúvidas de um usuário.
-    
+
     Args:
         usuario (str): Nome de usuário
-    
+
     Returns:
         list: Lista de dúvidas com id, pergunta, resposta, data_criacao
     """
@@ -294,7 +286,7 @@ def obter_historico(usuario):
   ```python
   # ✅ Correto
   db.execute("SELECT * FROM usuarios WHERE usuario = ?", (usuario,))
-  
+
   # ❌ Errado - NUNCA faça isso
   db.execute(f"SELECT * FROM usuarios WHERE usuario = '{usuario}'")
   ```
@@ -320,10 +312,10 @@ def obter_historico(usuario):
 - Indentação: 2 espaços
 - Use `const` por padrão, `let` quando necessário
 - Evite `var`
+- Use IIFE para encapsular lógica de módulo e evitar poluição do escopo global
 
 **Exemplo:**
 ```javascript
-// Enviar dúvida para backend
 async function enviarDuvida(duvida) {
   try {
     const response = await fetch('/', {
@@ -331,7 +323,7 @@ async function enviarDuvida(duvida) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ duvida })
     });
-    
+
     const data = await response.json();
     return data.resultado;
   } catch (error) {
@@ -351,10 +343,10 @@ Qualquer modificação de schema deve:
 ```sql
 -- ✅ Bom
 CREATE TABLE duvidas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    usuario TEXT NOT NULL,
-    pergunta TEXT NOT NULL,
-    resposta TEXT NOT NULL,
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    usuario      TEXT NOT NULL,
+    pergunta     TEXT NOT NULL,
+    resposta     TEXT NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario) REFERENCES usuarios(usuario)
 );
@@ -372,7 +364,7 @@ db.execute(
 
 ### Antes de Fazer o PR
 
-1. **Verify local changes:**
+1. **Verificar mudanças locais:**
    ```bash
    git status
    git diff main...your-branch
@@ -380,7 +372,7 @@ db.execute(
 
 2. **Executar testes locais:**
    ```bash
-   python test_app_extended.py
+   pytest test_app.py -v
    ```
 
 3. **Atualizar com main:**
@@ -415,14 +407,14 @@ Descrever em tópicos as mudanças técnicas implementadas nessa branch (ex.: fe
 - [ ] Código segue padrões do projeto
 - [ ] Testes estão passando
 - [ ] Documentação foi atualizada
-- [ ] Não há breakings changes
+- [ ] Não há breaking changes
 - [ ] Prepared statements usados para SQL
 - [ ] Validação de entrada implementada
 
 ## Como Testar
 
 1. `python db_init.py`
-2. `flask run`
+2. `python app.py`
 3. Acessar `http://localhost:5000`
 4. Criar conta e testar novo endpoint
 
@@ -432,15 +424,14 @@ Se aplicável, inclua prints do teste.
 
 ## Próximos passos
 
-Descrever em tópicos próximas ações ou pendências. 
-
+Descrever em tópicos próximas ações ou pendências.
 ```
 
-### Revisão de Code
+### Revisão de Código
 
 Todo PR precisa de **pelo menos 2 aprovações** antes de merge:
 - 1 do líder técnico (Guilherme)
-- 1 do líder backend (Luiz) ou QA (Keroly) ou PO (Gabriela)
+- 1 do líder backend (Luiz) ou QA (Keroly)
 
 **Comentários esperados:**
 - Segurança (SQL injection, XSS, autenticação)
@@ -457,15 +448,14 @@ Todo PR precisa de **pelo menos 2 aprovações** antes de merge:
 Execute antes de fazer PR:
 
 ```bash
-python test_app_extended.py
+pytest test_app.py -v
 ```
 
 **O que é testado:**
-- ✅ Banco de dados criado corretamente
-- ✅ Prepared statements usados (proteção SQL injection)
-- ✅ Isolamento por usuário (user_id no WHERE)
-- ✅ Rotas implementadas
-- ✅ Função salvar_duvida funciona
+- ✅ Criação de conta (sucesso, duplicado, senhas divergentes, campos vazios)
+- ✅ Login (sucesso, senha errada, usuário inexistente)
+- ✅ Histórico (sem autenticação, sessão anônima, usuário logado, dúvida inexistente)
+- ✅ Sessão anônima (`/continuar-sem-login`)
 
 ### Testes Manuais
 
@@ -499,10 +489,9 @@ Sempre teste localmente:
 
 **Descrição:** Página principal (chat com Boole)
 
-**Proteção:** Requer login (`@login_required`)
+**Proteção:** Não obrigatória — usuários anônimos podem usar o chat
 
-**Response:**
-- HTML da página index.html
+**Response:** HTML da página index.html
 
 ---
 
@@ -510,7 +499,7 @@ Sempre teste localmente:
 
 **Descrição:** Enviar dúvida e receber resposta do tutor IA
 
-**Proteção:** Requer login
+**Proteção:** Não obrigatória — dúvidas de usuários anônimos não são salvas
 
 **Request Body:**
 ```json
@@ -535,7 +524,7 @@ Sempre teste localmente:
 
 **Internamente:**
 - Chama `run_boole(duvida)` para obter resposta
-- Salva em banco com `salvar_duvida(usuario, pergunta, resposta)`
+- Salva em banco com `salvar_duvida(usuario, pergunta, resposta)` apenas se há usuário na sessão
 
 ---
 
@@ -543,7 +532,7 @@ Sempre teste localmente:
 
 **Descrição:** Obter todas as dúvidas do usuário autenticado
 
-**Proteção:** Requer login
+**Proteção:** Obrigatória — retorna 401 para usuários anônimos ou não autenticados
 
 **Response (200):**
 ```json
@@ -554,12 +543,6 @@ Sempre teste localmente:
       "pergunta": "O que é uma variável?",
       "resposta": "Uma variável é um espaço na memória...",
       "data_criacao": "2026-04-24 10:30:00"
-    },
-    {
-      "id": 2,
-      "pergunta": "Como fazer loops?",
-      "resposta": "Loops permitem repetir código...",
-      "data_criacao": "2026-04-24 11:00:00"
     }
   ]
 }
@@ -567,11 +550,11 @@ Sempre teste localmente:
 
 ---
 
-### GET /historico/<int:duvida_id>
+### GET /historico/\<int:duvida_id\>
 
 **Descrição:** Obter uma dúvida específica do usuário
 
-**Proteção:** Requer login + isolamento por usuário
+**Proteção:** Obrigatória + isolamento por usuário
 
 **Response (200):**
 ```json
@@ -587,6 +570,19 @@ Sempre teste localmente:
 ```json
 {
   "erro": "Dúvida não encontrada"
+}
+```
+
+---
+
+### POST /continuar-sem-login
+
+**Descrição:** Inicia sessão anônima (sem persistência de dados)
+
+**Response (200):**
+```json
+{
+  "redirect": "/"
 }
 ```
 
@@ -612,17 +608,17 @@ Sempre teste localmente:
 }
 ```
 
-**Response (200 - sucesso):**
+**Response (200):**
 ```json
 {
   "redirect": "/"
 }
 ```
 
-**Response (401 - erro):**
+**Response (401):**
 ```json
 {
-  "erro": "Usuário ou senha incorretos"
+  "erro": "Usuário ou senha inválidos"
 }
 ```
 
@@ -655,14 +651,14 @@ Sempre teste localmente:
 }
 ```
 
-**Response (200 - sucesso):**
+**Response (200):**
 ```json
 {
   "redirect": "/login"
 }
 ```
 
-**Response (400 - erro):**
+**Response (400):**
 ```json
 {
   "erro": "Esse nome de usuário já está em uso."
@@ -716,9 +712,6 @@ lsof -i :5000
 
 # Matar processo
 kill -9 <PID>
-
-# Ou rodar em porta diferente
-python app.py --port 5001
 ```
 
 ### "Prepared statement error"
@@ -754,5 +747,5 @@ db.execute(
 
 ---
 
-**Última atualização:** Abril 2026  
-**Versão:** 1.0
+**Última atualização:** Junho 2026
+**Versão:** 1.1
