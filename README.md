@@ -43,9 +43,11 @@ boole/
 ├── static/
 │   ├── behavior/           # JavaScript por página
 │   └── style/              # CSS por página
+│   └── images/             # Ícones e imagens
 │
 └── docs/
     ├── requisitos.md
+    ├── estrutura.txt
     └── entregas.md
 ```
 
@@ -168,6 +170,6 @@ A suite cobre autenticação, criação de conta, histórico e sessão anônima 
 | Leon Galvão | Líder Front-end, UI/UX |
 | Ithalo Ferreira | Desenvolvedor Front-end |
 | Keroly Santos | QA e Testes |
-| Alandrey Silva | Desenvolvedor Front-end |
+| Rafael Cardoso | Desenvolvedor Front-end |
 
 UFPE — Centro de Informática
