@@ -16,3 +16,9 @@ data_criacao - timestamp (DEFAULT CURRENT_TIMESTAMP)
 ÍNDICES:
 idx_duvidas_usuario ON duvidas(usuario)
 ========================
+AMBIENTE DE PRODUÇÃO
+
+Plataforma: Render
+Servidor: Gunicorn (gunicorn app:app)
+Banco: SQLite local (não persiste entre deploys)
+Sessões: filesystem local (não persiste entre deploys)
