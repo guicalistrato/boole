@@ -11,8 +11,9 @@ Bem-vindo ao Boole! Este documento descreve como configurar seu ambiente, entend
 5. [Padrões de Código](#padrões-de-código)
 6. [Processo de Pull Request](#processo-de-pull-request)
 7. [Testes](#testes)
-8. [Documentação de Endpoints](#documentação-de-endpoints)
-9. [Troubleshooting](#troubleshooting)
+8. [Deploy](#deploy)
+9. [Documentação de Endpoints](#documentação-de-endpoints)
+10. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -31,6 +32,7 @@ Bem-vindo ao Boole! Este documento descreve como configurar seu ambiente, entend
 - **IA**: Google Gemini API
 - **Frontend**: HTML/CSS/JavaScript (Jinja2 templates)
 - **Session**: Flask-session (armazenamento em filesystem)
+- **Produção**: Gunicorn no Render
 
 ---
 
@@ -84,7 +86,7 @@ FLASK_ENV=development
 python db_init.py
 ```
 
-Isso cria as tabelas `usuarios` e `duvidas` em `dados.db`.
+Isso cria as tabelas `usuarios`, `duvidas` e `codigos` em `dados.db`.
 
 ### Passo 6: Rodar a Aplicação
 
@@ -103,7 +105,7 @@ boole/
 ├── app.py                 # Aplicação Flask principal (rotas, autenticação, histórico)
 ├── boole.py               # Integração com Google Gemini API (tutor IA)
 ├── db_init.py             # Script de inicialização do banco de dados
-├── funcoes.py             # Funções auxiliares (decorador @login_required)
+├── funcoes.py             # Funções auxiliares e decorador @login_required
 ├── requirements.txt       # Dependências do projeto
 ├── dados.db               # Banco de dados SQLite (gerado automaticamente)
 ├── .env.local             # Variáveis de ambiente (não commit)
@@ -115,21 +117,22 @@ boole/
 │   ├── images/            # Ícones e imagens
 │   │
 │   ├── style/             # Arquivos em CSS (estilização)
-│   │   ├── criar_conta.css
 │   │   ├── index.css
-│   │   ├── login.css
+│   │   ├── popup.css
 │   │   └── sidebar.css
 │   │
 │   └── behavior/          # Arquivos em JavaScript (comportamento)
-│       ├── criar_conta.js
 │       ├── index.js
-│       ├── login.js
+│       ├── debug.js
+│       ├── perfil.js
 │       └── sidebar.js
 │
 ├── templates/             # Templates HTML (Jinja2)
 │   ├── index.html         # Página principal (chat com Boole)
 │   ├── login.html         # Página de login
-│   ├── criar_conta.html   # Página de criar conta
+│   ├── signup.html        # Página de criar conta
+│   ├── perfil.html        # Página de perfil do usuário
+│   ├── debug.html         # Página de modo debug
 │   └── sidebar.html       # Componente menu lateral
 │
 ├── docs/                  # Documentação adicional
@@ -144,23 +147,32 @@ boole/
 
 #### `app.py`
 Contém todas as rotas da aplicação:
-- `GET /` — Página inicial (chat com Boole)
-- `POST /` — Enviar dúvida e receber resposta do tutor IA
-- `GET /historico` — Obter todas as dúvidas do usuário
-- `GET /historico/<id>` — Obter dúvida específica
-- `POST /continuar-sem-login` — Iniciar sessão anônima
-- `GET /login` — Página de login
-- `POST /login` — Autenticar usuário
-- `GET /criar-conta` — Página de criar conta
+- `GET /` — Redireciona para `/chat`
+- `GET /chat` e `GET /chat/<id_chat>` — Página do chat
+- `POST /chat` e `POST /chat/<id_chat>` — Enviar dúvida e receber resposta
+- `DELETE /chat/<id_chat>` — Deletar conversa
+- `GET /api/chat/<id_chat>` — Obter mensagens de um chat
+- `GET /api/listar_chats` — Listar chats do usuário
+- `GET|POST /debug` — Página e lógica do modo debug
+- `GET /continuar-sem-login` — Iniciar sessão anônima
+- `GET /login` e `POST /login` — Autenticação
 - `POST /criar-conta` — Registrar novo usuário
+- `POST /perfil` — Atualizar dados do perfil
+- `GET /logout` — Encerrar sessão
 
 #### `boole.py`
 Gerencia integração com Google Gemini API:
-- `run_boole(pergunta)` — Processa pergunta com system prompt pedagógico e retorna resposta do tutor
+- `run_boole(pergunta, usuario, modelo, codigo, num)` — Processa pergunta com histórico e system prompt pedagógico, retorna `(resposta, titulo)`
 
 #### `funcoes.py`
 Funções auxiliares:
-- `@login_required` — Decorador que protege rotas que exigem autenticação (redireciona para `/login` se não há sessão ativa)
+- `@login_required` — Decorador que protege rotas que exigem autenticação
+- `get_db()` — Retorna conexão com o banco para a requisição atual
+- `obter_historico_chat(usuario)` — Retorna últimas 20 mensagens no formato Gemini
+- `salvar_duvida(...)` — Persiste pergunta e resposta no banco
+- `salvar_codigo(codigo, id_chat)` — Salva código para modo debug
+- `receber_codigo(id)` — Recupera código de um chat debug
+- `criar_id(tamanho)` — Gera ID aleatório para novos chats
 
 ---
 
@@ -318,7 +330,7 @@ def obter_historico(usuario):
 ```javascript
 async function enviarDuvida(duvida) {
   try {
-    const response = await fetch('/', {
+    const response = await fetch('/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ duvida })
@@ -347,14 +359,16 @@ CREATE TABLE duvidas (
     usuario      TEXT NOT NULL,
     pergunta     TEXT NOT NULL,
     resposta     TEXT NOT NULL,
+    nome_chat    TEXT NOT NULL,
+    id_chat      TEXT NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario) REFERENCES usuarios(usuario)
 );
 
 -- Sempre usar prepared statements em Python:
 db.execute(
-    "INSERT INTO duvidas (usuario, pergunta, resposta) VALUES (?, ?, ?)",
-    (usuario, pergunta, resposta)
+    "INSERT INTO duvidas (usuario, pergunta, resposta, nome_chat, id_chat) VALUES (?, ?, ?, ?, ?)",
+    (usuario, pergunta, resposta, nome_chat, id_chat)
 )
 ```
 
@@ -462,24 +476,67 @@ pytest test_app.py -v
 Sempre teste localmente:
 
 1. **Criar conta nova:**
-   - Acessar `/criar-conta`
-   - Preencher usuário, senha, confirmar
-   - Verificar se redireciona para login
+   - Acessar `/chat` e clicar em criar conta
+   - Preencher nome, usuário, senha, confirmar
+   - Verificar se redireciona para o chat autenticado
 
 2. **Login:**
    - Acessar `/login`
    - Usar credenciais criadas
-   - Verificar se acessa `/` (chat)
+   - Verificar se acessa `/chat`
 
 3. **Chat com Boole:**
    - Enviar pergunta: "O que é uma variável?"
    - Verificar se resposta aparece
-   - Verificar se histórico atualiza
+   - Verificar se conversa aparece na sidebar
 
-4. **Histórico:**
-   - Clicar em "Minhas Dúvidas"
-   - Verificar se todas as dúvidas aparecem
-   - Clicar em uma dúvida e verificar detalhes
+4. **Modo debug:**
+   - Acessar `/debug`
+   - Colar um código e iniciar chat
+   - Verificar se o Boole contextualiza o código nas respostas
+
+---
+
+## Deploy
+
+### Plataforma
+
+O projeto é hospedado no [Render](https://render.com) a partir da branch `main`.
+
+### Servidor de produção
+
+Em produção, o servidor de desenvolvimento do Flask é substituído pelo **Gunicorn**. O comando de start configurado no Render é:
+
+```bash
+gunicorn app:app
+```
+
+O Gunicorn já está listado em `requirements.txt` e não requer configuração adicional no código.
+
+### Variáveis de ambiente
+
+Configure no painel do Render (Settings → Environment):
+
+| Variável | Descrição |
+|----------|-----------|
+| `GEMINI_API_KEY` | Chave de acesso à API do Google Gemini |
+
+Nunca inclua `.env.local` no repositório — ele está no `.gitignore`.
+
+### Limitações do ambiente de produção
+
+- **Banco de dados:** o SQLite (`dados.db`) é armazenado localmente no servidor do Render e é apagado a cada novo deploy. Para persistência de dados em produção, seria necessário migrar para um banco externo (ex: PostgreSQL).
+- **Sessões:** os arquivos de sessão (`flask_session/`) também são locais e perdidos a cada redeploy.
+
+### Subir uma nova versão
+
+O Render faz deploy automático a cada push na branch `main`. O fluxo é:
+
+```
+sua branch → PR → merge em main → deploy automático no Render
+```
+
+Não é necessário nenhum comando manual para atualizar a aplicação em produção.
 
 ---
 
@@ -487,7 +544,13 @@ Sempre teste localmente:
 
 ### GET /
 
-**Descrição:** Página principal (chat com Boole)
+**Descrição:** Redireciona para `/chat`
+
+---
+
+### GET /chat e GET /chat/\<id_chat\>
+
+**Descrição:** Página principal do chat. Sem `id_chat` inicia nova conversa; com `id_chat` carrega conversa existente.
 
 **Proteção:** Não obrigatória — usuários anônimos podem usar o chat
 
@@ -495,7 +558,7 @@ Sempre teste localmente:
 
 ---
 
-### POST /
+### POST /chat e POST /chat/\<id_chat\>
 
 **Descrição:** Enviar dúvida e receber resposta do tutor IA
 
@@ -504,14 +567,20 @@ Sempre teste localmente:
 **Request Body:**
 ```json
 {
-  "duvida": "Como fazer um loop em Python?"
+  "duvida": "Como fazer um loop em Python?",
+  "num": 0,
+  "modelo": "flash"
 }
 ```
 
 **Response (200):**
 ```json
 {
-  "resultado": "Um loop permite repetir código. Em Python, temos for e while..."
+  "resultado": "Um loop permite repetir código...",
+  "titulo": "Loops em Python",
+  "id_chat": "ABC123XYZ",
+  "novo_chat": true,
+  "debug": false
 }
 ```
 
@@ -522,85 +591,95 @@ Sempre teste localmente:
 }
 ```
 
-**Internamente:**
-- Chama `run_boole(duvida)` para obter resposta
-- Salva em banco com `salvar_duvida(usuario, pergunta, resposta)` apenas se há usuário na sessão
-
 ---
 
-### GET /historico
+### DELETE /chat/\<id_chat\>
 
-**Descrição:** Obter todas as dúvidas do usuário autenticado
-
-**Proteção:** Obrigatória — retorna 401 para usuários anônimos ou não autenticados
+**Descrição:** Deletar uma conversa e todas as suas mensagens
 
 **Response (200):**
 ```json
 {
-  "duvidas": [
-    {
-      "id": 1,
-      "pergunta": "O que é uma variável?",
-      "resposta": "Uma variável é um espaço na memória...",
-      "data_criacao": "2026-04-24 10:30:00"
-    }
-  ]
-}
-```
-
----
-
-### GET /historico/\<int:duvida_id\>
-
-**Descrição:** Obter uma dúvida específica do usuário
-
-**Proteção:** Obrigatória + isolamento por usuário
-
-**Response (200):**
-```json
-{
-  "id": 1,
-  "pergunta": "O que é uma variável?",
-  "resposta": "Uma variável é um espaço na memória...",
-  "data_criacao": "2026-04-24 10:30:00"
+  "mensagem": "Conversa deletada com sucesso"
 }
 ```
 
 **Response (404):**
 ```json
 {
-  "erro": "Dúvida não encontrada"
+  "erro": "Conversa não encontrada"
 }
 ```
 
 ---
 
-### POST /continuar-sem-login
+### GET /api/chat/\<id_chat\>
 
-**Descrição:** Inicia sessão anônima (sem persistência de dados)
+**Descrição:** Obter todas as mensagens de um chat específico
+
+**Proteção:** Obrigatória + isolamento por usuário
 
 **Response (200):**
 ```json
 {
-  "redirect": "/"
+  "mensagens": [
+    {"pergunta": "O que é uma variável?", "resposta": "Uma variável é..."}
+  ],
+  "nome_chat": "Variáveis em Python"
 }
 ```
 
 ---
 
-### GET /login
+### GET /api/listar_chats
 
-**Descrição:** Página de login
+**Descrição:** Listar todos os chats do usuário autenticado
 
-**Response:** HTML do formulário de login
+**Proteção:** Obrigatória
+
+**Response (200):**
+```json
+{
+  "chats": [
+    {"id_chat": "ABC123", "nome_chat": "Loops em Python"},
+    {"id_chat": "XYZ456", "nome_chat": "Recursão"}
+  ]
+}
+```
 
 ---
 
-### POST /login
+### GET /debug e POST /debug
 
-**Descrição:** Autenticar usuário
+**Descrição:** Modo debug — permite enviar um código para o Boole analisar durante o chat
 
-**Request Body:**
+**POST Request Body:**
+```json
+{
+  "codigo": "def soma(a, b):\n    return a + b"
+}
+```
+
+**POST Response (200):**
+```json
+{
+  "redirect": "/chat/ABC123XYZ"
+}
+```
+
+---
+
+### GET /continuar-sem-login
+
+**Descrição:** Inicia sessão anônima e redireciona para o chat
+
+---
+
+### GET /login e POST /login
+
+**Descrição:** Página de login e autenticação
+
+**POST Request Body:**
 ```json
 {
   "usuario": "seu_usuario",
@@ -608,33 +687,20 @@ Sempre teste localmente:
 }
 ```
 
-**Response (200):**
+**POST Response (200):**
 ```json
 {
-  "redirect": "/"
+  "redirect": "/chat",
+  "usuario": "seu_usuario"
 }
 ```
 
-**Response (401):**
+**POST Response (401):**
 ```json
 {
   "erro": "Usuário ou senha inválidos"
 }
 ```
-
-**Internamente:**
-- Limpa sessão anterior
-- Valida entrada
-- Verifica hash de senha contra banco
-- Armazena `user_id` na sessão
-
----
-
-### GET /criar-conta
-
-**Descrição:** Página para criar conta
-
-**Response:** HTML do formulário
 
 ---
 
@@ -645,7 +711,8 @@ Sempre teste localmente:
 **Request Body:**
 ```json
 {
-  "usuario": "novo_usuario",
+  "nome": "Nome Completo",
+  "usuario": "email@exemplo.com",
   "senha": "senha_forte",
   "senha_confirma": "senha_forte"
 }
@@ -654,22 +721,46 @@ Sempre teste localmente:
 **Response (200):**
 ```json
 {
-  "redirect": "/login"
+  "redirect": "/chat",
+  "usuario": "email@exemplo.com"
 }
 ```
 
 **Response (400):**
 ```json
 {
-  "erro": "Esse nome de usuário já está em uso."
+  "erro": "Esse email já está sendo utilizado!"
 }
 ```
 
-**Internamente:**
-- Valida se usuário já existe
-- Verifica se senhas coincidem
-- Faz hash da senha com `generate_password_hash()`
-- Insere em tabela `usuarios`
+---
+
+### POST /perfil
+
+**Descrição:** Atualizar dados do perfil do usuário autenticado
+
+**Request Body:**
+```json
+{
+  "nome": "Novo Nome",
+  "usuario": "novo@email.com",
+  "senha": "nova_senha",
+  "senha_confirma": "nova_senha"
+}
+```
+
+**Response (200):**
+```json
+{
+  "redirect": "/chat"
+}
+```
+
+---
+
+### GET /logout
+
+**Descrição:** Encerra a sessão e redireciona para `/chat`
 
 ---
 
@@ -748,4 +839,4 @@ db.execute(
 ---
 
 **Última atualização:** Junho 2026
-**Versão:** 1.1
+**Versão:** 1.2

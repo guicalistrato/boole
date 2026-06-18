@@ -10,8 +10,9 @@ Boole é um tutor de programação baseado em inteligência artificial, desenvol
 - Python 3.8+ com Flask
 - SQLite para persistência de dados
 - Flask-Session para gerenciamento de sessões (filesystem)
-- Google Gemini API (`gemini-2.5-flash`) para o tutor IA
+- Google Gemini API (`gemini-2.5-flash` / `gemini-2.5-pro`) para o tutor IA
 - Werkzeug para hash de senhas
+- Gunicorn como servidor de produção
 
 **Frontend**
 - HTML/CSS/JavaScript
@@ -27,7 +28,7 @@ boole/
 ├── app.py                  # Aplicação Flask (rotas, autenticação, histórico)
 ├── boole.py                # Integração com Google Gemini API
 ├── db_init.py              # Inicialização do banco de dados
-├── funcoes.py              # Decorador @login_required
+├── funcoes.py              # Funções auxiliares e decorador @login_required
 ├── test_app.py             # Suite de testes automatizados (pytest)
 ├── requirements.txt        # Dependências
 ├── dados.db                # Banco SQLite (gerado automaticamente)
@@ -37,12 +38,14 @@ boole/
 ├── templates/
 │   ├── index.html          # Página principal do chat
 │   ├── login.html          # Página de login
-│   ├── criar_conta.html    # Página de criação de conta
+│   ├── signup.html         # Página de criação de conta
+│   ├── perfil.html         # Página de perfil do usuário
+│   ├── debug.html          # Página de modo debug
 │   └── sidebar.html        # Componente sidebar
 │
 ├── static/
 │   ├── behavior/           # JavaScript por página
-│   └── style/              # CSS por página
+│   ├── style/              # CSS por página
 │   └── images/             # Ícones e imagens
 │
 └── docs/
@@ -95,10 +98,42 @@ python db_init.py
 ### 6. Rodar a aplicação
 
 ```bash
-flask run
+python app.py
 ```
 
 Acesse: http://localhost:5000
+
+---
+
+## Deploy
+
+A aplicação está hospedada no [Render](https://render.com).
+
+### Plataforma
+
+| Item | Valor |
+|------|-------|
+| Plataforma | Render |
+| Servidor | Gunicorn |
+| Comando de start | `gunicorn app:app` |
+| Branch de produção | `main` |
+
+### Variáveis de ambiente
+
+No painel do Render, configure:
+
+| Variável | Descrição |
+|----------|-----------|
+| `GEMINI_API_KEY` | Chave de acesso à API do Google Gemini |
+
+**Importante:** nunca suba o arquivo `.env.local` para o repositório. A chave deve ser configurada exclusivamente pelo painel da plataforma.
+
+### Observações
+
+- O banco de dados SQLite (`dados.db`) é local ao servidor do Render e é recriado a cada novo deploy — os dados não persistem entre deploys.
+- As sessões (`flask_session/`) também são armazenadas localmente e são perdidas a cada redeploy.
+- O Render faz deploy automático a cada push na branch `main`.
+- O `debug=False` já está configurado em `app.py` para o ambiente de produção.
 
 ---
 
@@ -106,15 +141,22 @@ Acesse: http://localhost:5000
 
 | Método | Rota | Descrição | Autenticação |
 |--------|------|-----------|--------------|
-| GET | `/` | Página do chat | Não obrigatória |
-| POST | `/` | Enviar dúvida ao Boole | Não obrigatória |
-| POST | `/continuar-sem-login` | Iniciar sessão anônima | — |
+| GET | `/` | Redireciona para `/chat` | — |
+| GET | `/chat` | Página do chat (nova conversa) | Não obrigatória |
+| GET | `/chat/<id_chat>` | Página do chat (conversa existente) | Não obrigatória |
+| POST | `/chat` | Enviar dúvida (nova conversa) | Não obrigatória |
+| POST | `/chat/<id_chat>` | Enviar dúvida (conversa existente) | Não obrigatória |
+| DELETE | `/chat/<id_chat>` | Deletar conversa | Não obrigatória |
+| GET | `/api/chat/<id_chat>` | Obter mensagens de um chat | Obrigatória |
+| GET | `/api/listar_chats` | Listar chats do usuário | Obrigatória |
+| GET | `/debug` | Página de modo debug | — |
+| POST | `/debug` | Iniciar chat em modo debug | — |
+| GET | `/continuar-sem-login` | Iniciar sessão anônima | — |
 | GET | `/login` | Página de login | — |
 | POST | `/login` | Autenticar usuário | — |
-| GET | `/criar-conta` | Página de criação de conta | — |
 | POST | `/criar-conta` | Registrar novo usuário | — |
-| GET | `/historico` | Listar histórico de dúvidas | Obrigatória |
-| GET | `/historico/<id>` | Obter dúvida específica | Obrigatória |
+| POST | `/perfil` | Atualizar dados do perfil | Obrigatória |
+| GET | `/logout` | Encerrar sessão | — |
 
 Usuários anônimos podem usar o chat, mas as dúvidas não são salvas e o histórico não está disponível.
 
@@ -125,6 +167,7 @@ Usuários anônimos podem usar o chat, mas as dúvidas não são salvas e o hist
 ```sql
 CREATE TABLE usuarios (
     usuario TEXT PRIMARY KEY,
+    nome    TEXT NOT NULL,
     senha   TEXT NOT NULL
 );
 
@@ -133,8 +176,15 @@ CREATE TABLE duvidas (
     usuario      TEXT NOT NULL,
     pergunta     TEXT NOT NULL,
     resposta     TEXT NOT NULL,
+    nome_chat    TEXT NOT NULL,
+    id_chat      TEXT NOT NULL,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (usuario) REFERENCES usuarios(usuario)
+);
+
+CREATE TABLE codigos (
+    id_chat TEXT NOT NULL,
+    codigo  TEXT NOT NULL
 );
 ```
 
